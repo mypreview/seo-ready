@@ -64,9 +64,5 @@
 	},
 	"eslintConfig": {
 		"extends": "wordpress"
-	},
-	"dependencies": {
-		"slugify": "^1.4.5",
-		"url-slug": "^2.3.2"
 	}
 }
