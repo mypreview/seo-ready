@@ -152,7 +152,7 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 		 */
 		public function register_meta() {
 			register_post_meta(
-				'post',
+				'',
 				SEO_READY_PREFIX,
 				array(
 					'single'        => true,
