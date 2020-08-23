@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { toUpper, slice, join } from 'lodash';
+import { isPlainObject, escape, split, toUpper, slice, join } from 'lodash';
+import urlSlug from 'url-slug';
 import applyWithSelect from './../utils/with-select';
 import applyWithDispatch from './../utils/with-dispatch';
 import PREFIX from './../../utils/prefix';
@@ -13,17 +14,31 @@ const { __, sprintf } = wp.i18n;
 const { compose } = wp.compose;
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 const { Fragment, Component } = wp.element;
-const { URLInput } = wp.blockEditor;
-const { PanelBody, ExternalLink, ToggleControl, TextControl, TextareaControl, BaseControl } = wp.components;
+const { PanelBody, ExternalLink, ToggleControl, TextControl, TextareaControl } = wp.components;
 
 export default compose(
 	applyWithSelect,
 	applyWithDispatch
 )(
 	class Render extends Component {
+		state = {
+			defaults: {
+				title: '',
+				keywords: '',
+				description: '',
+				canonical: '',
+				noindex: false,
+				nofollow: false,
+			},
+		};
+
 		render() {
+			const { defaults } = this.state;
 			const { postType, getMeta, setMeta } = this.props;
-			const target = sprintf( '%s-%s-settings', PREFIX, postType );
+			const { seo_ready: seo } = getMeta;
+			const metas = isPlainObject( seo ) ? seo : defaults;
+			const { title, keywords, description, canonical, noindex, nofollow } = metas;
+			const target = sprintf( '%1$s-%2$s-settings', PREFIX, postType );
 			// Makes the first letter of the post-type name uppercase.
 			const postTypeLbl = toUpper( postType.charAt( 0 ) ) + join( slice( postType, 1 ), '' );
 
@@ -47,6 +62,7 @@ export default compose(
 						<PanelBody initialOpen={ true }>
 							<p>
 								{ sprintf(
+									/* translators: %s: Post type name. */
 									__(
 										'The following controls will enable you to alter SEO settings of this particular %s.',
 										'seo-ready'
@@ -61,52 +77,109 @@ export default compose(
 						<PanelBody initialOpen={ true }>
 							<TextControl
 								type="text"
+								value={ title }
+								onChange={ ( value ) =>
+									setMeta( 'seo_ready', {
+										...metas,
+										title: escape( value ),
+									} )
+								}
 								label={ __( 'Title', 'seo-ready' ) }
-								help={ sprintf(
-									__( 'Alternative title of this %s for search engines to index.', 'seo-ready' ),
-									postType
-								) }
+								help={
+									/* translators: %s: Post type name. */ sprintf(
+										__( 'Alternative title of this %s for search engines to index.', 'seo-ready' ),
+										postType
+									)
+								}
 							/>
 							<TextControl
 								type="text"
+								value={ keywords }
 								label={ __( 'Keywords', 'seo-ready' ) }
-								help={ sprintf(
-									__(
-										'Describe the content of this %s shortly by entering keywords written in lower case, and separated with a comma.',
-										'seo-ready'
-									),
-									postType
-								) }
+								onChange={ ( value ) =>
+									setMeta( 'seo_ready', {
+										...metas,
+										keywords: escape( join( split( value, /[ ,]+/gi ), ',' ) ),
+									} )
+								}
+								help={
+									/* translators: %s: Post type name. */ sprintf(
+										__(
+											'Describe the content of this %s shortly by entering keywords written in lower case, and separated with a comma.',
+											'seo-ready'
+										),
+										postType
+									)
+								}
 							/>
 							<TextareaControl
+								value={ description }
 								label={ __( 'Description', 'seo-ready' ) }
-								help={ sprintf(
-									__(
-										'Specify a short description text which should describe the content of this %s for search engines.',
-										'seo-ready'
-									),
-									postType
-								) }
+								onChange={ ( value ) =>
+									setMeta( 'seo_ready', {
+										...metas,
+										description: escape( value ),
+									} )
+								}
+								help={
+									/* translators: %s: Post type name. */ sprintf(
+										__(
+											'Specify a short description text which should describe the content of this %s for search engines.',
+											'seo-ready'
+										),
+										postType
+									)
+								}
 							/>
 							<TextControl
 								type="url"
+								value={ canonical }
 								label={ __( 'Canonical link', 'seo-ready' ) }
-								help={ sprintf(
-									__(
-										'Indicates to search engines that a master copy of this %s exists, and avoids duplicate content index.',
-										'seo-ready'
-									),
-									postType
-								) }
+								onChange={ ( value ) =>
+									setMeta( 'seo_ready', {
+										...metas,
+										canonical: urlSlug( value ),
+									} )
+								}
+								help={
+									/* translators: %s: Post type name. */ sprintf(
+										__(
+											'Indicates to search engines that a master copy of this %s exists, and avoids duplicate content index.',
+											'seo-ready'
+										),
+										postType
+									)
+								}
 							/>
 							<ToggleControl
-								label={ sprintf(
-									__( 'Do not show this %s in search results?', 'seo-ready' ),
-									postType
-								) }
+								checked={ !! noindex }
+								onChange={ () =>
+									setMeta( 'seo_ready', {
+										...metas,
+										noindex: ! noindex,
+									} )
+								}
+								label={
+									/* translators: %s: Post type name. */ sprintf(
+										__( 'Do not show this %s in search results?', 'seo-ready' ),
+										postType
+									)
+								}
 							/>
 							<ToggleControl
-								label={ sprintf( __( 'Do not follow the links on this %s?', 'seo-ready' ), postType ) }
+								checked={ !! nofollow }
+								onChange={ () =>
+									setMeta( 'seo_ready', {
+										...metas,
+										nofollow: ! nofollow,
+									} )
+								}
+								label={
+									/* translators: %s: Post type name. */ sprintf(
+										__( 'Do not follow the links on this %s?', 'seo-ready' ),
+										postType
+									)
+								}
 							/>
 						</PanelBody>
 					</PluginSidebar>
