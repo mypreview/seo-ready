@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { isPlainObject, escape, split, toUpper, slice, join } from 'lodash';
-import urlSlug from 'url-slug';
 import applyWithSelect from './../utils/with-select';
 import applyWithDispatch from './../utils/with-dispatch';
 import PREFIX from './../../utils/prefix';
@@ -138,7 +137,7 @@ export default compose(
 								onChange={ ( value ) =>
 									setMeta( 'seo_ready', {
 										...metas,
-										canonical: urlSlug( value ),
+										canonical: escape( value ),
 									} )
 								}
 								help={
