@@ -77,8 +77,9 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 		 * Main `SEO_Ready` instance
 		 * Ensures only one instance of `SEO_Ready` is loaded or can be loaded.
 		 *
-		 * @access  public
-		 * @return  instance
+		 * @access   public
+		 * @since    1.0.0
+		 * @return   instance
 		 */
 		public static function instance() {
 			if ( is_null( self::$instance ) ) {
@@ -91,11 +92,13 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 		/**
 		 * Setup class.
 		 *
-		 * @access  protected
-		 * @return  void
+		 * @access   protected
+		 * @since    1.0.0
+		 * @return   void
 		 */
 		protected function __construct() {
 			add_action( 'init', array( $this, 'textdomain' ) );
+			add_action( 'init', array( $this, 'register_meta' ) );
 			add_action( 'enqueue_block_editor_assets', array( $this, 'editor_enqueue' ) );
 			add_filter( sprintf( 'plugin_action_links_%s', SEO_READY_PLUGIN_BASENAME ), array( $this, 'additional_links' ) );
 		}
@@ -103,8 +106,9 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 		/**
 		 * Cloning instances of this class is forbidden.
 		 *
-		 * @access  protected
-		 * @return  void
+		 * @access   protected
+		 * @since    1.0.0
+		 * @return   void
 		 */
 		protected function __clone() {
 			_doing_it_wrong( __FUNCTION__, esc_html_x( 'Cloning instances of this class is forbidden.', 'clone', 'seo-ready' ), esc_html( SEO_READY_VERSION ) );
@@ -113,8 +117,9 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 		/**
 		 * Unserializing instances of this class is forbidden.
 		 *
-		 * @access  public
-		 * @return  void
+		 * @access   public
+		 * @since    1.0.0
+		 * @return   void
 		 */
 		public function __wakeup() {
 			_doing_it_wrong( __FUNCTION__, esc_html_x( 'Unserializing instances of this class is forbidden.', 'wakeup', 'seo-ready' ), esc_html( SEO_READY_VERSION ) );
@@ -124,17 +129,67 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 		 * Load languages file and text domains.
 		 * Define the internationalization functionality.
 		 *
-		 * @access  public
-		 * @return  void
+		 * @access   public
+		 * @since    1.0.0
+		 * @return   void
 		 */
 		public function textdomain() {
 			load_plugin_textdomain( 'seo-ready', false, dirname( dirname( SEO_READY_PLUGIN_BASENAME ) ) . '/languages/' );
 		}
 
 		/**
+		 * Registers custom meta keys for a specific
+		 * combination of object type and object subtype.
+		 *
+		 * @access   public
+		 * @since    1.0.0
+		 * @return   void
+		 */
+		public function register_meta() {
+			register_post_meta(
+				'post',
+				'seo_ready',
+				array(
+					'single'        => true,
+					'type'          => 'object',
+					'show_in_rest'  => array(
+						'schema' => array(
+							'type'       => 'object',
+							'additionalProperties' => false,
+							'properties' => array(
+								'title' => array(
+									'type' => 'string',
+								),
+								'keywords' => array(
+									'type' => 'string',
+								),
+								'description' => array(
+									'type' => 'string',
+								),
+								'canonical' => array(
+									'type' => 'string',
+								),
+								'noindex' => array(
+									'type' => 'boolean',
+								),
+								'nofollow' => array(
+									'type' => 'boolean',
+								),
+							),
+						),
+					),
+					'auth_callback' => function() {
+						return current_user_can( 'edit_posts' );
+					},
+				)
+			);
+		}
+
+		/**
 		 * Register the stylesheets and JavaScript for the Gutenberg (editor) side of the site.
 		 *
 		 * @access   public
+		 * @since    1.0.0
 		 * @return   void
 		 */
 		public function editor_enqueue() {
@@ -154,9 +209,10 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 		 * Display additional links in plugins table page.
 		 * Filters the list of action links displayed for a specific plugin in the Plugins list table.
 		 *
-		 * @access  public
-		 * @param   array $links      An array of plugin action links.
-		 * @return  array   $links
+		 * @access   public
+		 * @since    1.0.0
+		 * @param    array $links      An array of plugin action links.
+		 * @return   array   $links
 		 */
 		public function additional_links( $links ) {
 			$plugin_links = array();
