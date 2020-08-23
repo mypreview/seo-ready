@@ -1,7 +1,7 @@
 /**
  * Internal block libraries
  */
-const { G, SVG, Path } = wp.components;
+const { SVG, Path } = wp.components;
 
 /**
  * Custom block icons
