@@ -21,7 +21,7 @@
  * @wordpress-plugin
  * Plugin Name:             SEO Ready
  * Plugin URI:              https://www.mypreview.one
- * Description:             This plugin designed with extensibility in mind for data that should be associated with a particular block type but need not have any defined meaning.
+ * Description:             This plugin offers a GUI to generate most commonly used meta tags, so you can optimize your WordPress site for search engines… and do it in less time than it takes to brew a cup of coffee.
  * Version:                 1.0.0
  * Author:                  MyPreview
  * Author URI:              https://mahdiyazdani.com

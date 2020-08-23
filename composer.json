@@ -1,7 +1,7 @@
 {
 	"name": "mypreview/seo-ready",
 	"type": "wordpress-plugin",
-	"description": "",
+	"description": "This plugin offers a GUI to generate most commonly used meta tags, so you can optimize your WordPress site for search engines… and do it in less time than it takes to brew a cup of coffee.",
 	"keywords": [
 		"WordPress",
 		"Plugin"
