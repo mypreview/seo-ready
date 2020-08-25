@@ -1,3 +1,4 @@
 const PREFIX = 'seo-ready';
+const SLUG = 'seo_ready';
 
-export default PREFIX;
+export { PREFIX, SLUG };
