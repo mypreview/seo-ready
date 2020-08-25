@@ -9,10 +9,10 @@ Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-This plugin offers a GUI to generate most commonly used meta tags, so you can optimize your WordPress site for search engines… and do it in less time than it takes to brew a cup of coffee.
+A lightweight SEO plugin to generate most commonly used meta tags, but designed for privacy, speed, and accessibility.
 
 == Description ==
-When it comes to SEO there are a lot of things you need to consider to keep your website up to date. This plugin aims to help you with the technical side of On-Page SEO and provides a graphical user interface to generate a set of most commonly used meta tags.
+When it comes to SEO there are a lot of things you need to consider to keep your website up to date. This plugin aims to help you with the technical side of On-Page SEO and provides a graphical user interface to generate a set of most commonly used meta tags, in less time than it takes to brew a cup of coffee.
 
 Even though the term “tag” is not 100% correct in many places (some tags should correctly be called “elements” or “attributes”), people use this term because they tend to look for tags rather than the correct technical terms.
 
@@ -39,7 +39,31 @@ Automatic updates should work smoothly, but we still recommend you back up your 
 
 == Frequently Asked Questions ==
 = Where do I find the SEO panel for a post or page? =
-To find the SEO panel for a post/page, in the block editor screen, click the Analytics icon at the top right to open the SEO sidebar.
+To find the SEO panel for a post/page, in the block editor screen, click the “Analytics” icon at the top right to open the SEO sidebar.
+
+= Which post types are supported? =
+Any (custom) post type that comes with the new block editor (Gutenberg) support would be able to have access to the SEO panel directly from the edit screen.
+
+= Which meta tags are supported? =
+
+* Title
+* Keywords
+* Description
+* Canonical
+* No-index
+* No-follow
+
+= I don’t see the SEO panel on my edit screen! Why is that? =
+You likely need to enable the REST API for your post type before it will work. By default, the REST API parameter turned off when you register a custom post type. Therefore, you need to intentionally turn it ON in your code.
+
+**Note**: The `show_in_rest` option must be set to `true`.
+
+= How is data privacy (GDPR) being ensured? =
+To ensure the plugin is as privacy focused as possible it:
+
+* Does not track your usage of the plugin.
+* Does not phone out. No data is shared with third parties.
+* Does not add generator comments, or secret comments to your site’s HTML.
 
 = How do I get help with the plugin? =
 The easiest way to receive support is to “Create a new topic” by visiting Community Forums page [here](https://wordpress.org/support/plugin/seo-ready "SEO Ready Support Forum").
