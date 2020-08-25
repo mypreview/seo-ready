@@ -1,10 +1,10 @@
 /**
  * External dependencies
  */
-import { isPlainObject, escape, split, toUpper, slice, join } from 'lodash';
+import { isPlainObject, has, escape, split, toUpper, slice, join } from 'lodash';
 import applyWithSelect from './../utils/with-select';
 import applyWithDispatch from './../utils/with-dispatch';
-import PREFIX from './../../utils/prefix';
+import { PREFIX, SLUG } from './../../utils/prefix';
 
 /**
  * WordPress dependencies
@@ -13,7 +13,8 @@ const { __, sprintf } = wp.i18n;
 const { compose } = wp.compose;
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 const { Fragment, Component } = wp.element;
-const { PanelBody, ExternalLink, ToggleControl, TextControl, TextareaControl } = wp.components;
+const { PanelBody, ExternalLink, HorizontalRule, ToggleControl, TextControl, TextareaControl } = wp.components;
+const LOCALIZE = has( window, SLUG ) ? window[ SLUG ] : undefined;
 
 export default compose(
 	applyWithSelect,
@@ -180,6 +181,41 @@ export default compose(
 									)
 								}
 							/>
+						</PanelBody>
+						<PanelBody
+							initialOpen={ false }
+							title={ sprintf(
+								/* translators: %s: Emoji. */
+								__( '%s More', 'seo-ready' ),
+								'⚡'
+							) }
+						>
+							<p>
+								<strong>{ __( 'I need help customizing this plugin?', 'seo-ready' ) }</strong>
+								<br />
+								{ __(
+									'Get free of charge advice on what could be done or how complex different approaches are.',
+									'seo-ready'
+								) }
+								<br />
+								<ExternalLink href={ isPlainObject( LOCALIZE ) ? LOCALIZE.author_uri : '#' }>
+									{ __( 'Hire Me!', 'seo-ready' ) }
+								</ExternalLink>
+							</p>
+							<HorizontalRule />
+							<p>
+								<strong>{ __( 'Did you like the idea behind this plugin?', 'seo-ready' ) }</strong>
+								<br />
+								{ __( 'If you’re finding this plugin useful, ', 'seo-ready' ) }
+								<ExternalLink
+									href={ sprintf(
+										'https://wordpress.org/support/plugin/%s/reviews/?filter=5#new-post',
+										PREFIX
+									) }
+								>
+									{ __( 'rate it on the plugin directory.', 'seo-ready' ) }
+								</ExternalLink>
+							</p>
 						</PanelBody>
 					</PluginSidebar>
 				</Fragment>
