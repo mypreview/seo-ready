@@ -2,7 +2,7 @@
  * External dependencies
  */
 import forEach from 'lodash/forEach';
-import PREFIX from './utils/prefix';
+import { PREFIX } from './utils/prefix';
 
 /**
  * Editor plugins
