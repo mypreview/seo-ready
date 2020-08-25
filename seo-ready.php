@@ -282,6 +282,13 @@ if ( ! class_exists( 'SEO_Ready' ) ) :
 			// Enqueue the script.
 			wp_enqueue_script( SEO_READY_SLUG, $script_url, $script_asset['dependencies'], $script_asset['version'], true );
 			wp_set_script_translations( SEO_READY_SLUG, 'seo-ready', sprintf( '%s/languages/', SEO_READY_DIR_PATH ) );
+			wp_localize_script(
+				SEO_READY_SLUG,
+				SEO_READY_PREFIX,
+				array(
+					'author_uri'  => SEO_READY_AUTHOR_URI,
+				)
+			);
 		}
 
 		/**
