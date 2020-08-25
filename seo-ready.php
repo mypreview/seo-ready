@@ -21,7 +21,7 @@
  * @wordpress-plugin
  * Plugin Name:             SEO Ready
  * Plugin URI:              https://www.mypreview.one
- * Description:             This plugin offers a GUI to generate most commonly used meta tags, so you can optimize your WordPress site for search engines… and do it in less time than it takes to brew a cup of coffee.
+ * Description:             A lightweight SEO plugin to generate most commonly used meta tags, but designed for privacy, speed, and accessibility.
  * Version:                 1.0.0
  * Author:                  MyPreview
  * Author URI:              https://mahdiyazdani.com

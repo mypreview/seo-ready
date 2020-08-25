@@ -1,7 +1,7 @@
 {
 	"name": "seo-ready",
 	"title": "SEO Ready",
-	"description": "This plugin offers a GUI to generate most commonly used meta tags, so you can optimize your WordPress site for search engines… and do it in less time than it takes to brew a cup of coffee.",
+	"description": "A lightweight SEO plugin to generate most commonly used meta tags, but designed for privacy, speed, and accessibility.",
 	"version": "1.0.0",
 	"author": "MyPreview",
 	"author_shop": "https://www.mypreview.one",
