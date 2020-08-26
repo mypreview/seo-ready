@@ -1,6 +1,6 @@
 === SEO Ready ===
 Contributors: mahdiyazdani, mypreview, gookaani
-Tags: gutenberg, gutenberg blocks, block-editor, plugin, seo
+Tags: gutenberg, block-editor, meta description, meta title, seo, search engine optimization
 Donate link: https://www.mypreview.one
 Requires at least: 5.3
 Tested up to: 5.5
@@ -14,7 +14,7 @@ A lightweight SEO plugin to generate most commonly used meta tags, but designed 
 == Description ==
 When it comes to SEO there are a lot of things you need to consider to keep your website up to date. This plugin aims to help you with the technical side of On-Page SEO and provides a graphical user interface to generate a set of most commonly used meta tags, in less time than it takes to brew a cup of coffee.
 
-Even though the term “tag” is not 100% correct in many places (some tags should correctly be called “elements” or “attributes”), people use this term because they tend to look for tags rather than the correct technical terms.
+*Even though the term “tag” is not 100% correct in many places (some tags should correctly be called “elements” or “attributes”), people use this term because they tend to look for tags rather than the correct technical terms.*
 
 == Installation ==
 = Minimum Requirements =
@@ -91,7 +91,7 @@ Professional engineer and independent creative technologist in tech · over 6 ye
 [Available for hire &#8594;](https://mahdiyazdani.com "Mahdi Yazdani’s personal website")
 
 == Screenshots ==
-1. Plugin Settings
+1. Plugin’s sidebar panel.
 
 == Changelog ==
 = 1.0.0 =
