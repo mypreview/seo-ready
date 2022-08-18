@@ -14,7 +14,7 @@
 
 ## Requirements
 
-* PHP version 7.2 or greater.
+* PHP version 7.4 or greater.
 * MySQL version 5.6 or greater OR MariaDB version 10.0 or greater.
 * WordPress version 5.3 or greater.
 
@@ -36,6 +36,12 @@ We welcome contributions in any form, and you can help reporting, testing, and d
 
 All support is handled via a dedicated support forum, available at [Community Forums](https://wordpress.org/support/plugin/seo-ready "Community Forums"). Please head out there to open a new topic, in case you have any questions.
 
-## Rate ⭐⭐⭐⭐⭐
+## Rate
 
-Don't forget to rate this plugin [5 shining stars](https://wordpress.org/support/plugin/seo-ready/reviews/ "5 shining stars") if you like it, thanks!
+Please share your experience by leaving this plugin [5 shining stars ⭐⭐⭐⭐⭐](https://wordpress.org/support/plugin/seo-ready/reviews/ "Rate SEO Ready 5 stars") if you like it, thanks!
+
+## Donate
+
+If you or your company use any of my projects or like what I’m doing, please consider [making a donation](https://www.buymeacoffee.com/mahdiyazdani) so I can continue maintaining and evolving all my projects and new ones. I’m in this for the long run. 
+
+<a href="https://www.buymeacoffee.com/mahdiyazdani" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 165px !important;" ></a>
