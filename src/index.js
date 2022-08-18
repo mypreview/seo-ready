@@ -1,33 +1,23 @@
 /**
- * External dependencies
- */
-import forEach from 'lodash/forEach';
-import { PREFIX } from './utils/prefix';
-
-/**
- * Editor plugins
- */
-import * as seo from './seo';
-
-/**
  * WordPress dependencies
  */
-const { registerPlugin } = wp.plugins;
+import { registerPlugin } from '@wordpress/plugins';
+
+/**
+ * Internal dependencies
+ */
+import { Icon, Render } from './components';
 
 /**
  * Registering a new plugin module for WordPress.
  */
-export function registerPlugins() {
-	forEach( [ seo ], ( plugin ) => {
-		if ( ! plugin ) {
-			return;
-		}
-
-		const { name, settings } = plugin;
-
-		registerPlugin( `${ PREFIX }-${ name }`, {
-			...settings,
-		} );
-	} );
-}
-registerPlugins();
+registerPlugin( 'seo-ready', {
+	/**
+	 * @see    ./components/Icon.js
+	 */
+	icon: Icon,
+	/**
+	 * @see    ./components/Render.js
+	 */
+	render: Render,
+} );
