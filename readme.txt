@@ -1,11 +1,11 @@
 === SEO Ready ===
 Contributors: mahdiyazdani, mypreview, gookaani
-Tags: gutenberg, block-editor, meta description, meta title, seo, search engine optimization
-Donate link: https://www.mypreview.one
-Requires at least: 5.3
-Tested up to: 5.5
-Requires PHP: 7.2
-Stable tag: 1.0.0
+Tags: gutenberg, google search, meta description, meta title, seo, search engine optimization
+Donate link: https://www.buymeacoffee.com/mahdiyazdani
+Requires at least: 5.5
+Tested up to: 6.0
+Requires PHP: 7.4
+Stable tag: 2.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,7 +19,7 @@ When it comes to SEO there are a lot of things you need to consider to keep your
 == Installation ==
 = Minimum Requirements =
 
-* PHP version 7.2 or greater.
+* PHP version 7.4 or greater.
 * MySQL version 5.6 or greater or MariaDB version 10.0 or greater.
 * WordPress version 5.3 or greater.
 
@@ -83,6 +83,10 @@ We welcome contributions in any form, and you can help reporting, testing, and d
 Here’s the [GitHub development repository &#8594;](https://github.com/mypreview/seo-ready "GitHub development repository")
 
 = Did you like the idea behind this plugin? =
+If you or your company use any of my projects or like what I’m doing, please consider [making a donation](https://www.buymeacoffee.com/mahdiyazdani) so I can continue maintaining and evolving all my projects and new ones. I’m in this for the long run. 
+
+--AND/OR--
+
 Please share your experience by leaving this plugin [5 shining stars](https://wordpress.org/support/plugin/seo-ready/reviews/ "Rate SEO Ready 5 stars") if you like it, thanks!
 
 = I need help customizing this plugin? =
@@ -94,5 +98,10 @@ Professional engineer and independent creative technologist in tech · over 6 ye
 1. Plugin’s sidebar panel.
 
 == Changelog ==
+= 2.0.0 =
+* Refactored underlying code.
+* Compatibility with WordPress 6.0
+* Updated node modules.
+
 = 1.0.0 =
 * Initial release.
