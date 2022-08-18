@@ -40,7 +40,7 @@
 			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	},
-	"description": "A lightweight SEO plugin to generate most commonly used meta tags, but designed for privacy, speed, and accessibility.",
+	"description": "A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility.",
 	"homepage": "https://wordpress.org/support/plugin/seo-ready",
 	"keywords": [
 		"WordPress",
