@@ -3,9 +3,9 @@ Contributors: mahdiyazdani, mypreview, gookaani
 Tags: gutenberg, google search, meta description, meta title, seo, search engine optimization
 Donate link: https://www.buymeacoffee.com/mahdiyazdani
 Requires at least: 5.5
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -98,6 +98,9 @@ Professional engineer and independent creative technologist in tech · over 6 ye
 1. Plugin’s sidebar panel.
 
 == Changelog ==
+= 2.0.1 =
+* Compatibility with WordPress 6.1
+
 = 2.0.0 =
 * Refactored underlying code.
 * Compatibility with WordPress 6.0
