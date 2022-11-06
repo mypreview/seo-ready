@@ -28,7 +28,7 @@
 		"lint:wpcs-fix": "composer lint:wpcbf",
 		"makepot": "composer make-pot",
 		"packages-update": "wp-scripts packages-update",
-		"pre-archive": "npm run format && && npm run lint:js-fix && npm run lint:wpcs-fix && npm run build"
+		"pre-archive": "npm run format && npm run lint:css-fix && npm run lint:js-fix && npm run lint:wpcs-fix && npm run build"
 	},
 	"lint-staged": {
 		"*.{js,ts,tsx}": [
@@ -40,20 +40,21 @@
 	},
 	"dependencies": {
 		"@mypreview/unicorn-js-upsell": "1.0.1",
-		"@mypreview/unicorn-react-hooks": "1.1.0",
-		"@wordpress/components": "^22.0.0",
-		"@wordpress/edit-post": "^6.18.0",
-		"@wordpress/i18n": "^4.21.0",
-		"@wordpress/plugins": "^4.19.0",
-		"@wordpress/primitives": "^3.19.0",
+		"@mypreview/unicorn-react-components": "2.2.0",
+		"@mypreview/unicorn-react-hooks": "1.6.0",
+		"@wordpress/components": "22.0.0",
+		"@wordpress/edit-post": "6.18.0",
+		"@wordpress/i18n": "4.21.0",
+		"@wordpress/plugins": "4.19.0",
 		"lodash": "4.17.21",
 		"prop-types": "15.8.1"
 	},
 	"devDependencies": {
 		"@emotion/babel-plugin-jsx-pragmatic": "0.2.0",
 		"@emotion/babel-preset-css-prop": "11.10.0",
-		"@emotion/react": "11.10.0",
-		"@wordpress/scripts": "^24.5.0",
+		"@emotion/react": "11.10.5",
+		"@wordpress/env": "5.6.0",
+		"@wordpress/scripts": "24.5.0",
 		"husky": "8.0.1",
 		"lint-staged": "13.0.3",
 		"prettier": "npm:wp-prettier@^2.6.2"
