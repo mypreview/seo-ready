@@ -21,7 +21,7 @@ registerPlugin( 'seo-ready', {
 	/**
 	 * @see    ./assets/icons.json
 	 */
-	icon: <Icon d={ icons?.block } />,
+	icon: <Icon d={ icons?.plugin } />,
 
 	/**
 	 * @see    ./components/Render.js
