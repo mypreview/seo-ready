@@ -26,8 +26,8 @@
  * Version:             2.0.1
  * Requires at least:   5.5
  * Requires PHP:        7.4
- * Author:              Mahdi Yazdani
- * Author URI:          https://www.mahdiyazdani.com
+ * Author:              MyPreview
+ * Author URI:          https://mahdiyazdani.com
  * License:             GPL-3.0+
  * License URI:         http://www.gnu.org/licenses/gpl-3.0.txt
  * Text Domain:         seo-ready
@@ -184,7 +184,8 @@ function overwrite_title(): ?string {
 		$return = convert_chars( $return );
 		// Escaping for HTML parts.
 		$return = esc_html( $return );
-		// Forever eliminate “WordPress” from the planet!!
+		// Forever eliminate “Wordpress” from the planet!!
+		// Or at least the little bit we can influence.
 		$return = capital_P_dangit( $return );
 	}
 
