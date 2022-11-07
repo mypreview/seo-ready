@@ -28,7 +28,7 @@
 		"lint:wpcs-fix": "composer lint:wpcbf",
 		"makepot": "composer make-pot",
 		"packages-update": "wp-scripts packages-update",
-		"pre-archive": "npm run format && npm run lint:css-fix && npm run lint:js-fix && npm run lint:wpcs-fix && npm run build"
+		"pre-archive": "npm run format && npm run lint:js-fix && npm run lint:wpcs-fix && npm run build"
 	},
 	"lint-staged": {
 		"*.{js,ts,tsx}": [
