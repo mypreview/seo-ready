@@ -166,6 +166,7 @@ add_action( 'wp_head', __NAMESPACE__ . '\print_tags' );
  *
  * @since     2.0.0
  * @return    string
+ * @phpcs:disable WordPress.WP.CapitalPDangit.Misspelled
  */
 function overwrite_title(): ?string {
 	$return = null;
