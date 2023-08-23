@@ -1,4 +1,4 @@
-/* eslint-disable camelcase, no-nested-ternary */
+/* eslint-disable camelcase */
 ( function ( wp, lodash ) {
 	'use strict';
 
