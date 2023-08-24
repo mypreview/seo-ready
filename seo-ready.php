@@ -43,6 +43,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+define( 'SEO_READY_VERSION', '2.1.0' );
+
+/**
+ * Load the plugin text domain for translation.
+ *
+ * @since 2.1.0
+ *
+ * @return void
+ */
+function seo_ready_textdomain() {
+
+	load_plugin_textdomain( 'seo-ready', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'init', 'seo_ready_textdomain' );
+
 /**
  * Registers custom meta keys for a specific combination of object type and object subtype.
  *
@@ -82,6 +97,138 @@ function seo_ready_register_meta() {
 	}
 }
 add_action( 'init', 'seo_ready_register_meta' );
+
+/**
+ * Registers custom meta keys for a specific combination of object type and object subtype.
+ *
+ * @since 2.0.0
+ *
+ * @return void
+ */
+function seo_ready_print_tags() {
+
+	$post_id = seo_ready_get_localized_post_id();
+
+	if ( ! seo_ready_is_post_exists( $post_id ) ) {
+		return;
+	}
+
+	$post_meta = get_post_meta( $post_id, 'seo_ready', true );
+
+	if ( ! is_array( $post_meta ) || empty( $post_meta ) ) {
+		return;
+	}
+
+	$meta_tags = array(
+		'<!-- This site is optimized with the SEO Ready plugin v' . esc_attr( SEO_READY_VERSION ) . ' - https://mypreview.one -->',
+		'<meta name="generator" content="SEO Ready v' . esc_attr( SEO_READY_VERSION ) . '" class="seo-ready" />',
+		'<meta property="og:locale" content="' . esc_attr( get_locale() ) . '" class="seo-ready" />',
+		'<meta property="og:url" content="' . esc_url( get_permalink( $post_id ) ) . '" class="seo-ready" />',
+		'<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" class="seo-ready" />',
+		'<meta property="article:modified_time" content="' . esc_attr( get_the_modified_time( 'c', $post_id ) ) . '" class="seo-ready" />',
+	);
+
+	// Keywords.
+	if ( ! empty( $post_meta['keywords'] ) ) {
+		$meta_tags[] = '<meta name="keywords" content="' . esc_html( $post_meta['keywords'] ) . '" class="seo-ready" />';
+	}
+
+	// Description.
+	if ( ! empty( $post_meta['description'] ) ) {
+		$meta_tags[] = '<meta name="description" content="' . esc_html( $post_meta['description'] ) . '" class="seo-ready" />';
+	}
+
+	// Canonical.
+	if ( ! empty( $post_meta['canonical'] ) ) {
+		$meta_tags[] = '<link rel="canonical" href="' . esc_url( $post_meta['canonical'] ) . '" class="seo-ready" />';
+	}
+
+	// Noindex.
+	if ( ! empty( $post_meta['noindex'] ) ) {
+		$meta_tags[] = '<meta name="robots" content="noindex" class="seo-ready" />';
+	}
+
+	// Nofollow.
+	if ( ! empty( $post_meta['nofollow'] ) ) {
+		$meta_tags[] = '<meta name="robots" content="nofollow" class="seo-ready" />';
+	}
+
+	// Schema.
+	if ( ! empty( $post_meta['schema_type'] ) ) {
+		$meta_tags[] = '<meta itemprop="itemtype" content="http://schema.org/' . esc_html( $post_meta['schema_type'] ) . '" class="seo-ready" />';
+	}
+
+	// Schema.
+	if ( ! empty( $post_meta['schema_article_type'] ) ) {
+		$meta_tags[] = '<meta itemprop="articleType" content="' . esc_html( $post_meta['schema_article_type'] ) . '" class="seo-ready" />';
+	}
+
+	// Facebook image.
+	if ( ! empty( $post_meta['facebook_image'] ) ) {
+		$meta_tags[] = '<meta property="og:image" content="' . esc_url( wp_get_attachment_url( $post_meta['facebook_image'] ) ) . '" class="seo-ready" />';
+	}
+
+	// Facebook title.
+	if ( ! empty( $post_meta['facebook_title'] ) ) {
+		$meta_tags[] = '<meta property="og:title" content="' . esc_html( $post_meta['facebook_title'] ) . '" class="seo-ready" />';
+	}
+
+	// Facebook description.
+	if ( ! empty( $post_meta['facebook_description'] ) ) {
+		$meta_tags[] = '<meta property="og:description" content="' . esc_html( $post_meta['facebook_description'] ) . '" class="seo-ready" />';
+	}
+
+	// Twitter image.
+	if ( ! empty( $post_meta['twitter_image'] ) ) {
+		$meta_tags[] = '<meta name="twitter:image" content="' . esc_url( wp_get_attachment_url( $post_meta['twitter_image'] ) ) . '" class="seo-ready" />';
+	}
+
+	// Twitter title.
+	if ( ! empty( $post_meta['twitter_title'] ) ) {
+		$meta_tags[] = '<meta name="twitter:title" content="' . esc_html( $post_meta['twitter_title'] ) . '" class="seo-ready" />';
+	}
+
+	// Twitter description.
+	if ( ! empty( $post_meta['twitter_description'] ) ) {
+		$meta_tags[] = '<meta name="twitter:description" content="' . esc_html( $post_meta['twitter_description'] ) . '" class="seo-ready" />';
+	}
+
+	$meta_tags[] = '<!-- / SEO Ready -->';
+
+	echo implode( "\n", $meta_tags ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+add_action( 'wp_head', 'seo_ready_print_tags', 2 );
+
+/**
+ * Overrides the document title before it is generated.
+ *
+ * @since 2.0.0
+ *
+ * @param string $title Default document title.
+ *
+ * @return string
+ */
+function seo_ready_overwrite_title( $title ) {
+
+	$post_id = seo_ready_get_localized_post_id();
+
+	if ( ! seo_ready_is_post_exists( $post_id ) ) {
+		return $title;
+	}
+
+	$post_meta = get_post_meta( $post_id, 'seo_ready', true );
+
+	if ( ! is_array( $post_meta ) || empty( $post_meta ) || empty( $post_meta['title'] ) ) {
+		return $title;
+	}
+
+	// Title.
+	$title = $post_meta['title'];
+	$title = esc_html( wptexturize( convert_chars( $title ) ) );
+
+	return $title;
+}
+add_filter( 'pre_get_document_title', 'seo_ready_overwrite_title', 99 );
 
 /**
  * Enqueue scripts and styles for the editor.
@@ -171,4 +318,69 @@ function seo_ready_get_properties() {
 			'type'              => 'string',
 		),
 	);
+}
+
+/**
+ * Determines if a post, identified by the specified ID,
+ * exist within the WordPress database.
+ *
+ * @since 2.0.0
+ *
+ * @param null|string $post_id Post ID.
+ *
+ * @return bool
+ */
+function seo_ready_is_post_exists( $post_id = '' ) {
+
+	return ! empty( $post_id ) && is_string( get_post_type( $post_id ) );
+}
+
+/**
+ * Retrieves post id of given post-object or currently queried object id.
+ *
+ * @since 2.0.0
+ *
+ * @param int|WP_Post|null $post Post ID or post object.
+ *
+ * @return int
+ */
+function seo_ready_get_post_id( $post = null ) {
+
+	$get_post = get_post( $post, 'OBJECT' );
+
+	if ( ! is_null( $get_post ) && property_exists( $get_post, 'ID' ) ) {
+		return (int) $get_post->ID;
+	}
+
+	return (int) get_queried_object_id();
+}
+
+/**
+ * Post id of the translation if exists, null otherwise.
+ *
+ * @since 2.0.0
+ *
+ * @param string $post_id Post ID.
+ *
+ * @return string
+ */
+function seo_ready_get_localized_post_id( $post_id = null ) {
+
+	if ( is_null( $post_id ) ) {
+		$post_id = seo_ready_get_post_id();
+	}
+
+	$post_id = strval( $post_id );
+
+	if ( ! function_exists( 'pll_get_post' ) ) {
+		return $post_id;
+	}
+
+	$pll_post_id = pll_get_post( $post_id );
+
+	if ( ! is_null( $pll_post_id ) ) {
+		return $pll_post_id;
+	}
+
+	return $post_id;
 }
