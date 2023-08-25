@@ -59,6 +59,32 @@ function seo_ready_textdomain() {
 add_action( 'init', 'seo_ready_textdomain' );
 
 /**
+ * Add additional helpful links to the plugin’s metadata.
+ *
+ * @since 2.0.0
+ *
+ * @param array  $links An array of the plugin’s metadata.
+ * @param string $file  Path to the plugin file relative to the plugins directory.
+ *
+ * @return array
+ */
+function seo_ready_add_meta_links( $links, $file ) {
+
+	if ( plugin_basename( __FILE__ ) !== $file ) {
+		return $links;
+	}
+
+	$plugin_links = array();
+	/* translators: 1: Open anchor tag, 2: Close anchor tag. */
+	$plugin_links[] = sprintf( _x( '%1$sCommunity support%2$s', 'plugin link', 'seo-ready' ), '<a href="https://wordpress.org/support/plugin/seo-ready" target="_blank" rel="noopener noreferrer nofollow">', '</a>' );
+	/* translators: 1: Open anchor tag, 2: Close anchor tag. */
+	$plugin_links[] = sprintf( _x( '%1$sDonate%2$s', 'plugin link', 'seo-ready' ), sprintf( '<a href="https://www.buymeacoffee.com/mahdiyazdani" class="button-link-delete" target="_blank" rel="noopener noreferrer nofollow" title="%s">☕ ', esc_attr__( 'Donate to support this plugin', 'seo-ready' ) ), '</a>' );
+
+	return array_merge( $links, $plugin_links );
+}
+add_filter( 'plugin_row_meta', 'seo_ready_add_meta_links', 10, 2 );
+
+/**
  * Registers custom meta keys for a specific combination of object type and object subtype.
  *
  * @since 2.0.1
@@ -109,19 +135,21 @@ function seo_ready_print_tags() {
 
 	$post_id = seo_ready_get_localized_post_id();
 
+	// Bail early if no post id is found.
 	if ( ! seo_ready_is_post_exists( $post_id ) ) {
 		return;
 	}
 
 	$post_meta = get_post_meta( $post_id, 'seo_ready', true );
 
+	// Leave early if no meta tags are found.
 	if ( ! is_array( $post_meta ) || empty( $post_meta ) ) {
 		return;
 	}
 
-	$meta_tags = array(
+	$schema_types = array( 'WebPage' );
+	$meta_tags    = array(
 		'<!-- This site is optimized with the SEO Ready plugin v' . esc_attr( SEO_READY_VERSION ) . ' - https://mypreview.one -->',
-		'<meta name="generator" content="SEO Ready v' . esc_attr( SEO_READY_VERSION ) . '" class="seo-ready" />',
 		'<meta property="og:locale" content="' . esc_attr( get_locale() ) . '" class="seo-ready" />',
 		'<meta property="og:url" content="' . esc_url( get_permalink( $post_id ) ) . '" class="seo-ready" />',
 		'<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" class="seo-ready" />',
@@ -138,11 +166,6 @@ function seo_ready_print_tags() {
 		$meta_tags[] = '<meta name="description" content="' . esc_html( $post_meta['description'] ) . '" class="seo-ready" />';
 	}
 
-	// Canonical.
-	if ( ! empty( $post_meta['canonical'] ) ) {
-		$meta_tags[] = '<link rel="canonical" href="' . esc_url( $post_meta['canonical'] ) . '" class="seo-ready" />';
-	}
-
 	// Noindex.
 	if ( ! empty( $post_meta['noindex'] ) ) {
 		$meta_tags[] = '<meta name="robots" content="noindex" class="seo-ready" />';
@@ -155,7 +178,8 @@ function seo_ready_print_tags() {
 
 	// Schema.
 	if ( ! empty( $post_meta['schema_type'] ) ) {
-		$meta_tags[] = '<meta itemprop="itemtype" content="http://schema.org/' . esc_html( $post_meta['schema_type'] ) . '" class="seo-ready" />';
+		$schema_types[] = $post_meta['schema_type'];
+		$meta_tags[]    = '<meta itemprop="itemtype" content="http://schema.org/' . esc_html( $post_meta['schema_type'] ) . '" class="seo-ready" />';
 	}
 
 	// Schema.
@@ -180,12 +204,18 @@ function seo_ready_print_tags() {
 
 	// Twitter image.
 	if ( ! empty( $post_meta['twitter_image'] ) ) {
+		$meta_tags[] = '<meta name="twitter:card" content="summary_large_image" class="seo-ready" />';
 		$meta_tags[] = '<meta name="twitter:image" content="' . esc_url( wp_get_attachment_url( $post_meta['twitter_image'] ) ) . '" class="seo-ready" />';
 	}
 
 	// Twitter title.
 	if ( ! empty( $post_meta['twitter_title'] ) ) {
+		$estimated_reading_time_minutes = seo_ready_estimated_reading_time_minutes( $post_id );
+
 		$meta_tags[] = '<meta name="twitter:title" content="' . esc_html( $post_meta['twitter_title'] ) . '" class="seo-ready" />';
+		$meta_tags[] = '<meta name="twitter:label1" content="' . esc_html__( 'Est. reading time', 'seo-ready' ) . '" class="seo-ready" />';
+		/* translators: %s: Estimated reading time in minutes. */
+		$meta_tags[] = '<meta name="twitter:data1" content="' . sprintf( _n( '%s minute', '%s minutes', $estimated_reading_time_minutes, 'seo-ready' ), number_format_i18n( $estimated_reading_time_minutes ) ) . '" class="seo-ready" />';
 	}
 
 	// Twitter description.
@@ -193,11 +223,28 @@ function seo_ready_print_tags() {
 		$meta_tags[] = '<meta name="twitter:description" content="' . esc_html( $post_meta['twitter_description'] ) . '" class="seo-ready" />';
 	}
 
+	// Canonical.
+	$meta_tags[] = '<link rel="canonical" href="' . esc_url( $post_meta['canonical'] ?? get_permalink( $post_id ) ) . '" class="seo-ready" />';
+
+	// Schema.
+	$meta_tags[] = '<script type="application/ld+json">' . seo_ready_get_schema_json_ld( $schema_types ) . '</script>';
+
+	// Close.
 	$meta_tags[] = '<!-- / SEO Ready -->';
+
+	/**
+	 * Filters the SEO Ready meta tags.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $meta_tags Meta tags.
+	 * @param int   $post_id   Post ID.
+	 */
+	$meta_tags = apply_filters( 'seo_ready_meta_tags', $meta_tags, $post_id );
 
 	echo implode( "\n", $meta_tags ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
-add_action( 'wp_head', 'seo_ready_print_tags', 2 );
+add_action( 'wp_head', 'seo_ready_print_tags', 3 );
 
 /**
  * Overrides the document title before it is generated.
@@ -250,6 +297,159 @@ function seo_ready_enqueue_editor() {
 	);
 }
 add_action( 'enqueue_block_editor_assets', 'seo_ready_enqueue_editor' );
+
+/**
+ * Enqueue scripts and styles for the frontend.
+ *
+ * @since 2.1.0
+ *
+ * @param array $schema_types Schema types. Default is `WebPage`.
+ *
+ * @return string
+ */
+function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ) ) {
+
+	$current_url     = get_permalink();
+	$author_url      = get_author_posts_url( get_the_author_meta( 'ID' ) );
+	$author_name     = get_the_author();
+	$author_gravatar = get_avatar_url( get_the_author_meta( 'user_email' ), array( 'size' => 96 ) );
+
+	$webpage_itempage = array(
+		'@type'           => array_unique( $schema_types ),
+		'@id'             => $current_url,
+		'url'             => $current_url,
+		'name'            => get_the_title() . ' - ' . get_bloginfo( 'name' ),
+		'isPartOf'        => array(
+			'@id' => path_join( get_bloginfo( 'url' ), '#website' ),
+		),
+		'datePublished'   => get_the_time( 'c' ),
+		'dateModified'    => get_the_modified_time( 'c' ),
+		'breadcrumb'      => array(
+			'@id' => path_join( $current_url, '#breadcrumb' ),
+		),
+		'inLanguage'      => get_bloginfo( 'language' ),
+		'potentialAction' => array(
+			array(
+				'@type'  => 'ReadAction',
+				'target' => array(
+					$current_url,
+				),
+			),
+		),
+	);
+
+	$breadcrumb_list = array(
+		'@type'           => 'BreadcrumbList',
+		'@id'             => path_join( $current_url, '#breadcrumb' ),
+		'itemListElement' => seo_ready_generate_breadcrumb_list_item(),
+	);
+
+	$website = array(
+		'@type'           => 'WebSite',
+		'@id'             => path_join( get_bloginfo( 'url' ), '#website' ),
+		'url'             => get_bloginfo( 'url' ),
+		'name'            => get_bloginfo( 'name' ),
+		'description'     => get_bloginfo( 'description' ),
+		'potentialAction' => array(
+			array(
+				'@type'       => 'SearchAction',
+				'target'      => array(
+					'@type'       => 'EntryPoint',
+					'urlTemplate' => path_join( get_bloginfo( 'url' ), '?s={search_term_string}' ),
+				),
+				'query-input' => 'required name=search_term_string',
+			),
+		),
+		'inLanguage'      => get_bloginfo( 'language' ),
+	);
+
+	$person = array(
+		'@type'  => 'Person',
+		'@id'    => path_join( path_join( get_bloginfo( 'url' ), '#/schema/person' ), seo_ready_get_current_user_hash( get_the_author_meta( 'ID' ) ) ),
+		'name'   => $author_name,
+		'image'  => array(
+			'@type'      => 'ImageObject',
+			'inLanguage' => get_bloginfo( 'language' ),
+			'@id'        => path_join( $author_url, '#/schema/person/image' ),
+			'url'        => $author_gravatar,
+			'contentUrl' => $author_gravatar,
+			'caption'    => $author_name,
+		),
+		'sameAs' => array(
+			$author_url,
+		),
+		'url'    => $author_url,
+	);
+
+	$graph = array(
+		'@context' => 'https://schema.org',
+		'@graph'   => array(
+			$webpage_itempage,
+			$breadcrumb_list,
+			$website,
+			$person,
+		),
+	);
+
+	return wp_json_encode( $graph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+}
+
+/**
+ * Generates breadcrumb list item.
+ *
+ * @since 2.1.0
+ *
+ * @return array
+ */
+function seo_ready_generate_breadcrumb_list_item() {
+
+	// Bail early if WooCommerce breadcrumb class doesn't exist.
+	if ( ! class_exists( 'WC_Breadcrumb' ) ) {
+		return;
+	}
+
+	$breadcrumbs = new WC_Breadcrumb();
+
+	// Add homepage link.
+	if ( ! is_front_page() ) {
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		$breadcrumbs->add_crumb( __( 'Home', 'seo-ready' ), apply_filters( 'woocommerce_breadcrumb_home_url', home_url() ) );
+	}
+
+	$breadcrumbs          = $breadcrumbs->generate();
+	$breadcrumb_list_item = array();
+
+	foreach ( $breadcrumbs as $position => $breadcrumb ) {
+		$breadcrumb_list_item[] = array(
+			'@type'    => 'ListItem',
+			'position' => $position + 1,
+			'name'     => $breadcrumb[0],
+			'item'     => $breadcrumb[1],
+		);
+	}
+
+	return $breadcrumb_list_item;
+}
+
+/**
+ * Retrieves the hash of the current user.
+ *
+ * @since 2.1.0
+ *
+ * @param int $user_id User ID.
+ *
+ * @return string
+ */
+function seo_ready_get_current_user_hash( $user_id ) {
+
+	$user = get_userdata( $user_id );
+
+	if ( ! ( $user instanceof WP_User ) ) {
+		return '';
+	}
+
+	return wp_hash( $user->user_login . $user->ID );
+}
 
 /**
  * Registers custom meta keys for a specific combination of object type and object subtype.
@@ -372,6 +572,7 @@ function seo_ready_get_localized_post_id( $post_id = null ) {
 
 	$post_id = strval( $post_id );
 
+	// Bail early if Polylang is not active.
 	if ( ! function_exists( 'pll_get_post' ) ) {
 		return $post_id;
 	}
@@ -383,4 +584,27 @@ function seo_ready_get_localized_post_id( $post_id = null ) {
 	}
 
 	return $post_id;
+}
+
+/**
+ * Retrieves the estimated reading time in minutes.
+ *
+ * @since 2.0.0
+ *
+ * @param int $post_id Post ID.
+ *
+ * @return int
+ */
+function seo_ready_estimated_reading_time_minutes( $post_id ) {
+
+	$content    = get_post_field( 'post_content', $post_id );
+	$word_count = str_word_count( wp_strip_all_tags( $content ) );
+
+	// Average reading speed in words per minute.
+	$words_per_minute = 200;
+
+	// Calculate the estimated reading time in minutes.
+	$reading_time_minutes = ceil( $word_count / $words_per_minute );
+
+	return $reading_time_minutes;
 }
