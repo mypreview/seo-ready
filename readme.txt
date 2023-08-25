@@ -93,7 +93,7 @@ Please share your experience by leaving this plugin [5 shining stars](https://wo
 1. Plugin’s sidebar panel.
 
 == Changelog ==
-= Version 2.1.0 =
+= 2.1.0 =
 * Introduces support for Social and Schema type meta tags.
 * Ensures compatibility with WordPress 6.3.
 
