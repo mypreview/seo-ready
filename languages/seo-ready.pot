@@ -1,17 +1,17 @@
-# Copyright (C) 2022 Mahdi Yazdani
-# This file is distributed under the GPL-3.0+.
+# Copyright (C) 2023 MyPreview
+# This file is distributed under the GPL-3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: SEO Ready 2.0.1\n"
+"Project-Id-Version: SEO Ready 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/seo-ready\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-11-04T20:57:21+00:00\n"
+"POT-Creation-Date: 2023-08-25T19:52:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: seo-ready\n"
 
 #. Plugin Name of the plugin
@@ -19,90 +19,276 @@ msgid "SEO Ready"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://www.mypreview.one"
+#. Author URI of the plugin
+msgid "https://mypreview.one"
 msgstr ""
 
 #. Description of the plugin
-msgid "This plugin offers a GUI to generate most commonly used meta tags, so you can optimize your WordPress site for search engines… and do it in less time than it takes to brew a cup of coffee."
+msgid "A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility."
 msgstr ""
 
 #. Author of the plugin
-msgid "Mahdi Yazdani"
-msgstr ""
-
-#. Author URI of the plugin
-msgid "https://www.mahdiyazdani.com"
+msgid "MyPreview"
 msgstr ""
 
 #. translators: 1: Open anchor tag, 2: Close anchor tag.
-#: seo-ready.php:229
+#: seo-ready.php:79
 msgctxt "plugin link"
 msgid "%1$sCommunity support%2$s"
 msgstr ""
 
 #. translators: 1: Open anchor tag, 2: Close anchor tag.
-#: seo-ready.php:231
+#: seo-ready.php:81
 msgctxt "plugin link"
 msgid "%1$sDonate%2$s"
 msgstr ""
 
 #. translators: 1: Open anchor tag, 2: Close anchor tag.
-#: seo-ready.php:231
+#: seo-ready.php:81
 msgid "Donate to support this plugin"
 msgstr ""
 
+#: seo-ready.php:216
+msgid "Est. reading time"
+msgstr ""
+
+#. translators: %s: Estimated reading time in minutes.
+#: seo-ready.php:218
+msgid "%s minute"
+msgid_plural "%s minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: seo-ready.php:416
+msgid "Home"
+msgstr ""
+
 #. translators: %s: Post type name
-#: src/components/Render.js:39
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:103
 msgid "%s SEO"
 msgstr ""
 
-#. translators: %s: Post type name.
-#: src/components/Render.js:47
-msgid "The following controls will enable you to alter SEO settings of this particular %s."
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:111
+msgid "SEO"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:112
+msgid "Schema"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:113
+msgid "Social"
 msgstr ""
 
 #. translators: %s: Post type name.
-#: src/components/Render.js:60
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:124
 msgid "Alternative title of this \"%s\" for search engines to index."
 msgstr ""
 
-#: src/components/Render.js:64
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:130
+#: assets/js/plugin.js:345
+#: assets/js/plugin.js:425
 msgid "Title"
 msgstr ""
 
 #. translators: %s: Post type name.
-#: src/components/Render.js:72
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:137
 msgid "Describe the content of this \"%s\" shortly by entering keywords written in lower case, and separated with a comma."
 msgstr ""
 
-#: src/components/Render.js:79
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:143
 msgid "Keywords"
 msgstr ""
 
 #. translators: %s: Post type name.
-#: src/components/Render.js:86
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:150
 msgid "Specify a short description text which should describe the content of this \"%s\" for search engines."
 msgstr ""
 
-#: src/components/Render.js:90
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:156
+#: assets/js/plugin.js:357
+#: assets/js/plugin.js:437
 msgid "Description"
 msgstr ""
 
 #. translators: %s: Post type name.
-#: src/components/Render.js:98
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:164
 msgid "Indicates to search engines that a master copy of this \"%s\" exists, and avoids duplicate content index."
 msgstr ""
 
-#: src/components/Render.js:102
-msgid "Canonical link"
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:170
+msgid "Canonical URL"
 msgstr ""
 
 #. translators: %s: Post type name.
-#: src/components/Render.js:109
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:177
 msgid "Do not show this \"%s\" in search results?"
 msgstr ""
 
 #. translators: %s: Post type name.
-#: src/components/Render.js:114
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:185
 msgid "Do not follow the links on this \"%s\"?"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:196
+msgid "Schema Type"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:199
+msgid "Default for Pages (Web Page)"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:203
+msgid "Item Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:207
+msgid "About Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:211
+msgid "FAQ Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:215
+msgid "QA Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:219
+msgid "Profile Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:223
+msgid "Contact Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:227
+msgid "Collection Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:231
+msgid "Checkout Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:235
+msgid "Search Results Page"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:243
+msgid "Article Type"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:246
+msgid "Default for Pages (None)"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:250
+msgid "Article"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:254
+msgid "Blog Post"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:258
+msgid "News Article"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:262
+msgid "Satirical Article"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:266
+msgid "Tech Article"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:270
+msgid "Report"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:284
+msgid "Facebook"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:324
+msgid "Remove Facebook image"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:334
+msgid "Set Facebook image"
+msgstr ""
+
+#. translators: %s: Post type name.
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:342
+msgid "Alternative title of this \"%s\" for Facebook."
+msgstr ""
+
+#. translators: %s: Post type name.
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:351
+msgid "Describe the content of this \"%s\" shortly for Facebook."
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:364
+msgid "Twitter"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:404
+msgid "Remove Twitter image"
+msgstr ""
+
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:414
+msgid "Set Twitter image"
+msgstr ""
+
+#. translators: %s: Post type name.
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:422
+msgid "Alternative title of this \"%s\" for Twitter."
+msgstr ""
+
+#. translators: %s: Post type name.
+#: assets/js/minified/plugin.js:1
+#: assets/js/plugin.js:431
+msgid "Describe the content of this \"%s\" shortly for Twitter."
 msgstr ""
