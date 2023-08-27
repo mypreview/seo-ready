@@ -14,7 +14,7 @@
 	"license": "GPL-3.0-or-later",
 	"author": "MyPreview",
 	"scripts": {
-		"archive": "npm run minify && composer bundle",
+		"archive": "npm run minify:js && composer bundle",
 		"format": "prettier --write \"**/*.{js,json}\"",
 		"lint:css": "stylelint assets/css/*.css",
 		"lint:css:fix": "stylelint assets/css/*.css --fix",
