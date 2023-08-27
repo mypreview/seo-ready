@@ -227,7 +227,7 @@ function seo_ready_print_tags() {
 	$meta_tags[] = '<link rel="canonical" href="' . esc_url( $post_meta['canonical'] ?? get_permalink( $post_id ) ) . '" class="seo-ready" />';
 
 	// Schema.
-	$meta_tags[] = '<script type="application/ld+json">' . seo_ready_get_schema_json_ld( $schema_types ) . '</script>';
+	$meta_tags[] = '<script type="application/ld+json" class="seo-ready">' . seo_ready_get_schema_json_ld( $schema_types, ! empty( $post_meta['schema_article_type'] ) ) . '</script>';
 
 	// Close.
 	$meta_tags[] = '<!-- / SEO Ready -->';
@@ -303,16 +303,15 @@ add_action( 'enqueue_block_editor_assets', 'seo_ready_enqueue_editor' );
  *
  * @since 2.1.0
  *
- * @param array $schema_types Schema types. Default is `WebPage`.
+ * @param array $schema_types     Schema types. Default is `WebPage`.
+ * @param bool  $has_person_graph Whether the graph has a person or not. Default is `false`.
  *
  * @return string
  */
-function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ) ) {
+function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ), $has_person_graph = false ) {
 
-	$current_url     = get_permalink();
-	$author_url      = get_author_posts_url( get_the_author_meta( 'ID' ) );
-	$author_name     = get_the_author();
-	$author_gravatar = get_avatar_url( get_the_author_meta( 'user_email' ), array( 'size' => 96 ) );
+	$person      = array();
+	$current_url = get_permalink();
 
 	$webpage_itempage = array(
 		'@type'           => array_unique( $schema_types ),
@@ -363,31 +362,39 @@ function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ) ) {
 		'inLanguage'      => get_bloginfo( 'language' ),
 	);
 
-	$person = array(
-		'@type'  => 'Person',
-		'@id'    => path_join( path_join( get_bloginfo( 'url' ), '#/schema/person' ), seo_ready_get_current_user_hash( get_the_author_meta( 'ID' ) ) ),
-		'name'   => $author_name,
-		'image'  => array(
-			'@type'      => 'ImageObject',
-			'inLanguage' => get_bloginfo( 'language' ),
-			'@id'        => path_join( $author_url, '#/schema/person/image' ),
-			'url'        => $author_gravatar,
-			'contentUrl' => $author_gravatar,
-			'caption'    => $author_name,
-		),
-		'sameAs' => array(
-			$author_url,
-		),
-		'url'    => $author_url,
-	);
+	// Person graph.
+	if ( $has_person_graph ) {
+		$author_name     = get_the_author();
+		$author_url      = get_author_posts_url( get_the_author_meta( 'ID' ) );
+		$author_gravatar = get_avatar_url( get_the_author_meta( 'user_email' ), array( 'size' => 96 ) );
+		$person          = array(
+			'@type'  => 'Person',
+			'@id'    => path_join( path_join( get_bloginfo( 'url' ), '#/schema/person' ), seo_ready_get_current_user_hash( get_the_author_meta( 'ID' ) ) ),
+			'name'   => $author_name,
+			'image'  => array(
+				'@type'      => 'ImageObject',
+				'inLanguage' => get_bloginfo( 'language' ),
+				'@id'        => path_join( $author_url, '#/schema/person/image' ),
+				'url'        => $author_gravatar,
+				'contentUrl' => $author_gravatar,
+				'caption'    => $author_name,
+			),
+			'sameAs' => array(
+				$author_url,
+			),
+			'url'    => $author_url,
+		);
+	}
 
 	$graph = array(
 		'@context' => 'https://schema.org',
-		'@graph'   => array(
-			$webpage_itempage,
-			$breadcrumb_list,
-			$website,
-			$person,
+		'@graph'   => array_filter(
+			array(
+				$webpage_itempage,
+				$breadcrumb_list,
+				$website,
+				$person,
+			)
 		),
 	);
 
