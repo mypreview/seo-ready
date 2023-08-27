@@ -2,7 +2,7 @@
 	"archive": {
 		"exclude": [
 			"!/languages",
-			"!vendor/*",
+			"vendor",
 			"node_modules",
 			"CODE_OF_CONDUCT.md",
 			"composer.json",
