@@ -7,7 +7,7 @@
 	}
 
 	const META_KEY = 'seo_ready';
-	const { defaultTo, get, merge, join, split } = lodash;
+	const { defaultTo, get, merge } = lodash;
 	const { createElement: el, Fragment, useCallback } = wp.element;
 	const { useSelect, useDispatch } = wp.data;
 	const { registerPlugin } = wp.plugins;
@@ -35,6 +35,11 @@
 				el( Path, { d: 'M12.5 3.82843L11 5.32843L11 2.5L12.5 1L12.5 3.82843Z' } )
 			),
 		render: () => {
+			// Leave early if we're not on a post type edit screen.
+			if ( ! wp.data.select( 'core/editor' ).getCurrentPostType() ) {
+				return;
+			}
+
 			const { postId, postMeta, postType, postTypeLabel } = useSelect( ( select ) => {
 				const { getCurrentPostId, getCurrentPostType, getEditedPostAttribute, getPostTypeLabel } =
 					select( 'core/editor' );
@@ -46,6 +51,7 @@
 					postTypeLabel: getPostTypeLabel(),
 				};
 			} );
+
 			const metaValue = defaultTo( get( postMeta, META_KEY ), postMeta );
 			const { editEntityRecord } = useDispatch( 'core' );
 			const setMeta = useCallback(
@@ -131,8 +137,7 @@
 											onChange: ( value ) => setMeta( 'title', value ),
 											value: title || '',
 										} ),
-										el( TextControl, {
-											autoComplete: 'off',
+										el( TextareaControl, {
 											help: /* translators: %s: Post type name. */ sprintf(
 												__(
 													'Describe the content of this "%s" shortly by entering keywords written in lower case, and separated with a comma.',
@@ -141,8 +146,7 @@
 												postTypeLabel
 											),
 											label: __( 'Keywords', 'seo-ready' ),
-											onChange: ( value ) =>
-												setMeta( 'keywords', join( split( value, /[ ,]+/gi ), ',' ), ',' ),
+											onChange: ( value ) => setMeta( 'keywords', value ),
 											value: keywords || '',
 										} ),
 										el( TextareaControl, {
