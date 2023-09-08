@@ -1,30 +1,23 @@
 {
 	"archive": {
 		"exclude": [
-			"!/build",
 			"!/languages",
-			"/@mypreview",
-			"/src",
-			"/vendor",
+			"vendor",
 			"node_modules",
-			"CONTRIBUTING.md",
 			"CODE_OF_CONDUCT.md",
-			"babel.config.js",
 			"composer.json",
 			"composer.lock",
 			"package.json",
 			"package-lock.json",
 			"phpcs.xml.dist",
-			"phpstan.neon.dist",
 			"README.md",
-			"webpack.config.js",
-			"/.*"
+			".*"
 		]
 	},
 	"authors": [
 		{
-			"homepage": "https://www.mahdiyazdani.com",
-			"name": "Mahdi Yazdani"
+			"homepage": "https://github.com/mypreview/seo-ready",
+			"name": "SEO Ready"
 		}
 	],
 	"config": {
@@ -33,7 +26,14 @@
 		}
 	},
 	"description": "A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility.",
-	"homepage": "https://wordpress.org/support/plugin/seo-ready",
+	"extra": {
+		"scripts-description": {
+			"lint:wpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier",
+			"lint:wpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
+			"make-pot": "Create a POT file for the WordPress plugin in the current directory"
+		}
+	},
+	"homepage": "https://wordpress.org/plugins/seo-ready",
 	"keywords": [
 		"WordPress",
 		"Plugin"
@@ -53,9 +53,16 @@
 		"wp-coding-standards/wpcs": "2.3.0"
 	},
 	"scripts": {
+		"bundle": [
+			"composer lint:wpcbf",
+			"rm -rf seo-ready.zip",
+			"composer install --no-dev --no-scripts",
+			"composer archive --file=seo-ready --format=zip",
+			"composer install -vvv"
+		],
 		"lint:wpcbf": "phpcbf --extensions=php -p --runtime-set testVersion 7.4-",
 		"lint:wpcs": "phpcs --extensions=php -s -p --runtime-set testVersion 7.4-",
-		"make-pot": "wp i18n make-pot . languages/seo-ready.pot --exclude=build"
+		"make-pot": "wp i18n make-pot . languages/seo-ready.pot --domain=seo-ready"
 	},
 	"type": "wordpress-plugin"
 }
