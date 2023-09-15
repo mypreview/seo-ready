@@ -135,14 +135,21 @@ function seo_ready_print_tags() {
 
 	$post_id = seo_ready_get_localized_post_id();
 
-	// Bail early if no post id is found.
+	// Leave early if no post id is found.
 	if ( ! seo_ready_is_post_exists( $post_id ) ) {
 		return;
 	}
 
+	$post_type = get_post_type( $post_id );
+
+	// Leave early if the current post type is not allowed.
+	if ( ! in_array( $post_type, apply_filters( 'seo_ready_allowed_post_types', array( 'post', 'page' ) ), true ) ) {
+		return $title;
+	}
+
 	$post_meta = get_post_meta( $post_id, 'seo_ready', true );
 
-	// Leave early if no meta tags are found.
+	// Leave early if no post meta is found.
 	if ( ! is_array( $post_meta ) || empty( $post_meta ) ) {
 		return;
 	}
@@ -259,21 +266,28 @@ function seo_ready_overwrite_title( $title ) {
 
 	$post_id = seo_ready_get_localized_post_id();
 
+	// Leave early if no post id is found.
 	if ( ! seo_ready_is_post_exists( $post_id ) ) {
+		return $title;
+	}
+
+	$post_type = get_post_type( $post_id );
+
+	// Leave early if the current post type is not allowed.
+	if ( ! in_array( $post_type, apply_filters( 'seo_ready_allowed_post_types', array( 'post', 'page' ) ), true ) ) {
 		return $title;
 	}
 
 	$post_meta = get_post_meta( $post_id, 'seo_ready', true );
 
-	if ( ! is_array( $post_meta ) || empty( $post_meta ) || empty( $post_meta['title'] ) ) {
+	// Leave early if no post meta is found.
+	if ( ! is_array( $post_meta ) || empty( $post_meta['title'] ) ) {
 		return $title;
 	}
 
-	// Title.
-	$title = $post_meta['title'];
-	$title = esc_html( wptexturize( convert_chars( $title ) ) );
+	$custom_title = $post_meta['title'];
 
-	return $title;
+	return esc_html( wptexturize( convert_chars( $custom_title ) ) );
 }
 add_filter( 'pre_get_document_title', 'seo_ready_overwrite_title', 99 );
 
