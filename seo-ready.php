@@ -143,8 +143,8 @@ function seo_ready_print_tags() {
 	$post_type = get_post_type( $post_id );
 
 	// Leave early if the current post type is not allowed.
-	if ( ! in_array( $post_type, apply_filters( 'seo_ready_allowed_post_types', array( 'post', 'page' ) ), true ) ) {
-		return $title;
+	if ( ! in_array( $post_type, apply_filters( 'seo_ready_allowed_post_types', array( 'post', 'page' ) ), true ) || ! is_singular( $post_type ) ) {
+		return;
 	}
 
 	$post_meta = get_post_meta( $post_id, 'seo_ready', true );
@@ -274,7 +274,7 @@ function seo_ready_overwrite_title( $title ) {
 	$post_type = get_post_type( $post_id );
 
 	// Leave early if the current post type is not allowed.
-	if ( ! in_array( $post_type, apply_filters( 'seo_ready_allowed_post_types', array( 'post', 'page' ) ), true ) ) {
+	if ( ! in_array( $post_type, apply_filters( 'seo_ready_allowed_post_types', array( 'post', 'page' ) ), true ) || ! is_singular( $post_type ) ) {
 		return $title;
 	}
 
