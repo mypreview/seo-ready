@@ -18,22 +18,21 @@
 	const { __, sprintf } = wp.i18n;
 
 	registerPlugin( 'seo-ready', {
-		icon: () =>
-			el(
-				SVG,
-				{ width: 24, height: 24, viewBox: '0 0 19 6', fill: 'none' },
-				el( 'rect', { x: '0.5', width: '3', height: '2' } ),
-				el( 'rect', { x: '15.5', y: '4', width: '3', height: '2' } ),
-				el( Path, { d: 'M4 0H5C5.55228 0 6 0.447715 6 1V6H5C4.44772 6 4 5.55228 4 5V0Z' } ),
-				el( Path, {
-					d: 'M8.5 0H9.5C10.0523 0 10.5 0.447715 10.5 1V6H9.5C8.94772 6 8.5 5.55228 8.5 5V0Z',
-				} ),
-				el( Path, {
-					d: 'M13 0H14C14.5523 0 15 0.447715 15 1V6H14C13.4477 6 13 5.55228 13 5V0Z',
-				} ),
-				el( Path, { d: 'M8 3.82843L6.5 5.32843L6.5 2.5L8 1L8 3.82843Z' } ),
-				el( Path, { d: 'M12.5 3.82843L11 5.32843L11 2.5L12.5 1L12.5 3.82843Z' } )
-			),
+		icon: el(
+			SVG,
+			{ width: 24, height: 24, viewBox: '0 0 19 6', fill: 'none' },
+			el( 'rect', { x: '0.5', width: '3', height: '2' } ),
+			el( 'rect', { x: '15.5', y: '4', width: '3', height: '2' } ),
+			el( Path, { d: 'M4 0H5C5.55228 0 6 0.447715 6 1V6H5C4.44772 6 4 5.55228 4 5V0Z' } ),
+			el( Path, {
+				d: 'M8.5 0H9.5C10.0523 0 10.5 0.447715 10.5 1V6H9.5C8.94772 6 8.5 5.55228 8.5 5V0Z',
+			} ),
+			el( Path, {
+				d: 'M13 0H14C14.5523 0 15 0.447715 15 1V6H14C13.4477 6 13 5.55228 13 5V0Z',
+			} ),
+			el( Path, { d: 'M8 3.82843L6.5 5.32843L6.5 2.5L8 1L8 3.82843Z' } ),
+			el( Path, { d: 'M12.5 3.82843L11 5.32843L11 2.5L12.5 1L12.5 3.82843Z' } )
+		),
 		render: () => {
 			// Leave early if we're not on a post type edit screen.
 			if ( ! wp.data.select( 'core/editor' ).getCurrentPostType() ) {
@@ -98,7 +97,7 @@
 					{
 						target: 'seo-ready-settings',
 					},
-					'My Sidebar'
+					__( 'SEO Ready', 'seo-ready' )
 				),
 				el(
 					PluginSidebar,
