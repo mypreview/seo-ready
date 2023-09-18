@@ -5,7 +5,7 @@ Donate link: https://www.buymeacoffee.com/mahdiyazdani
 Requires at least: 5.5
 Tested up to: 6.3
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -92,7 +92,10 @@ Please share your experience by leaving this plugin [5 shining stars](https://wo
 == Screenshots ==
 1. Plugin’s sidebar panel.
 
-== Changelog ==
+== Changelog ===
+= 2.1.1 =
+* Prevented the generation of SEO tags for archive templates.
+
 = 2.1.0 =
 * Introduces support for Social and Schema type meta tags.
 * Ensures compatibility with WordPress 6.3.
