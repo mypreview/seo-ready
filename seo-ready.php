@@ -155,13 +155,7 @@ function seo_ready_print_tags() {
 	}
 
 	$schema_types = array( 'WebPage' );
-	$meta_tags    = array(
-		'<!-- This site is optimized with the SEO Ready plugin v' . esc_attr( SEO_READY_VERSION ) . ' - https://mypreview.one -->',
-		'<meta property="og:locale" content="' . esc_attr( get_locale() ) . '" class="seo-ready" />',
-		'<meta property="og:url" content="' . esc_url( get_permalink( $post_id ) ) . '" class="seo-ready" />',
-		'<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" class="seo-ready" />',
-		'<meta property="article:modified_time" content="' . esc_attr( get_the_modified_time( 'c', $post_id ) ) . '" class="seo-ready" />',
-	);
+	$meta_tags[]  = '<!-- This site is optimized with the SEO Ready plugin v' . esc_attr( SEO_READY_VERSION ) . ' - https://mypreview.one -->';
 
 	// Keywords.
 	if ( ! empty( $post_meta['keywords'] ) ) {
@@ -194,9 +188,14 @@ function seo_ready_print_tags() {
 		$meta_tags[] = '<meta itemprop="articleType" content="' . esc_html( $post_meta['schema_article_type'] ) . '" class="seo-ready" />';
 	}
 
+	$meta_tags[] = '<meta property="og:locale" content="' . esc_attr( get_locale() ) . '" class="seo-ready" />';
+	$meta_tags[] = '<meta property="og:url" content="' . esc_url( get_permalink( $post_id ) ) . '" class="seo-ready" />';
+	$meta_tags[] = '<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" class="seo-ready" />';
+
 	// Facebook image.
 	if ( ! empty( $post_meta['facebook_image'] ) ) {
 		$meta_tags[] = '<meta property="og:image" content="' . esc_url( wp_get_attachment_url( $post_meta['facebook_image'] ) ) . '" class="seo-ready" />';
+		$meta_tags[] = '<meta property="og:image:type" content="' . esc_attr( get_post_mime_type( $post_meta['facebook_image'] ) ) . '" class="seo-ready" />';
 	}
 
 	// Facebook title.
@@ -223,6 +222,9 @@ function seo_ready_print_tags() {
 		$meta_tags[] = '<meta name="twitter:label1" content="' . esc_html__( 'Est. reading time', 'seo-ready' ) . '" class="seo-ready" />';
 		/* translators: %s: Estimated reading time in minutes. */
 		$meta_tags[] = '<meta name="twitter:data1" content="' . sprintf( _n( '%s minute', '%s minutes', $estimated_reading_time_minutes, 'seo-ready' ), number_format_i18n( $estimated_reading_time_minutes ) ) . '" class="seo-ready" />';
+
+		$meta_tags[] = '<meta name="twitter:label2" content="' . esc_html__( 'Written by', 'seo-ready' ) . '" class="seo-ready" />';
+		$meta_tags[] = '<meta name="twitter:data2" content="' . esc_html( get_the_author() ) . '" class="seo-ready" />';
 	}
 
 	// Twitter description.
@@ -230,14 +232,15 @@ function seo_ready_print_tags() {
 		$meta_tags[] = '<meta name="twitter:description" content="' . esc_html( $post_meta['twitter_description'] ) . '" class="seo-ready" />';
 	}
 
+	// Published and modified time.
+	$meta_tags[] = '<meta property="article:published_time" content="' . esc_attr( get_the_time( 'c', $post_id ) ) . '" class="seo-ready" />';
+	$meta_tags[] = '<meta property="article:modified_time" content="' . esc_attr( get_the_modified_time( 'c', $post_id ) ) . '" class="seo-ready" />';
+
 	// Canonical.
 	$meta_tags[] = '<link rel="canonical" href="' . esc_url( $post_meta['canonical'] ?? get_permalink( $post_id ) ) . '" class="seo-ready" />';
 
 	// Schema.
 	$meta_tags[] = '<script type="application/ld+json" class="seo-ready">' . seo_ready_get_schema_json_ld( $schema_types, ! empty( $post_meta['schema_article_type'] ) ) . '</script>';
-
-	// Close.
-	$meta_tags[] = '<!-- / SEO Ready -->';
 
 	/**
 	 * Filters the SEO Ready meta tags.
@@ -248,6 +251,9 @@ function seo_ready_print_tags() {
 	 * @param int   $post_id   Post ID.
 	 */
 	$meta_tags = apply_filters( 'seo_ready_meta_tags', $meta_tags, $post_id );
+
+	// Close.
+	$meta_tags[] = '<!-- / SEO Ready -->';
 
 	echo implode( "\n", $meta_tags ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
