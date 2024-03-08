@@ -14,7 +14,8 @@
 	const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 	const { MediaUpload } = wp.blockEditor;
 	const { SVG, Path } = wp.primitives;
-	const { Button, PanelBody, SelectControl, TabPanel, TextControl, TextareaControl, ToggleControl } = wp.components;
+	const { Button, PanelBody, RangeControl, SelectControl, TabPanel, TextControl, TextareaControl, ToggleControl } =
+		wp.components;
 	const { __, sprintf } = wp.i18n;
 
 	registerPlugin( 'seo-ready', {
@@ -67,6 +68,7 @@
 				description,
 				canonical,
 				redirect,
+				redirect_delay,
 				noindex,
 				nofollow,
 				schema_type,
@@ -189,6 +191,19 @@
 											onChange: ( value ) => setMeta( 'redirect', value ),
 											value: redirect || '',
 										} ),
+										redirect &&
+											el( RangeControl, {
+												label: __( 'Redirect Delay', 'seo-ready' ),
+												help: __(
+													'The time in seconds before the redirect occurs.',
+													'seo-ready'
+												),
+												value: redirect_delay || 0,
+												onChange: ( value ) => setMeta( 'redirect_delay', value ),
+												min: 0,
+												max: 10,
+												step: 1,
+											} ),
 										el( ToggleControl, {
 											checked: Boolean( noindex ),
 											label: /* translators: %s: Post type name. */ sprintf(

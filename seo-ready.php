@@ -241,7 +241,7 @@ function seo_ready_print_tags() {
 
 	// Redirect.
 	if ( ! empty( $post_meta['redirect'] ) ) {
-		$meta_tags[] = '<meta http-equiv="refresh" content="5;url=' . esc_url( $post_meta['redirect'] ) . '" class="seo-ready" />';
+		$meta_tags[] = '<meta http-equiv="refresh" content="' . absint( $post_meta['redirect_delay'] ) . ';url=' . esc_url( $post_meta['redirect'] ) . '" class="seo-ready" />';
 	}
 
 	// Schema.
@@ -512,6 +512,10 @@ function seo_ready_get_properties() {
 		'redirect' => array(
 			'sanitize_callback' => 'sanitize_text_field',
 			'type'              => 'string',
+		),
+		'redirect_delay' => array(
+			'sanitize_callback' => 'absint',
+			'type'              => 'integer',
 		),
 		'noindex' => array(
 			'sanitize_callback' => 'rest_sanitize_boolean',
