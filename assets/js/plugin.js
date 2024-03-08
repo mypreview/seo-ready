@@ -66,6 +66,7 @@
 				keywords,
 				description,
 				canonical,
+				redirect,
 				noindex,
 				nofollow,
 				schema_type,
@@ -173,6 +174,20 @@
 											label: __( 'Canonical URL', 'seo-ready' ),
 											onChange: ( value ) => setMeta( 'canonical', value ),
 											value: canonical || '',
+										} ),
+										el( TextControl, {
+											type: 'url',
+											autoComplete: 'off',
+											help: /* translators: %s: Post type name. */ sprintf(
+												__(
+													'Redirects visitors to the specified URL instead of the current URL of this "%s".',
+													'seo-ready'
+												),
+												postTypeLabel
+											),
+											label: __( 'Redirect URL', 'seo-ready' ),
+											onChange: ( value ) => setMeta( 'redirect', value ),
+											value: redirect || '',
 										} ),
 										el( ToggleControl, {
 											checked: Boolean( noindex ),
