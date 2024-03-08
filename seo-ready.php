@@ -26,7 +26,7 @@
  * Plugin Name: SEO Ready
  * Plugin URI: https://mypreview.one
  * Description: A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility.
- * Version: 2.1.1
+ * Version: 2.2.0
  * Author: MyPreview
  * Author URI: https://mypreview.one
  * Requires at least: 5.9
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SEO_READY_VERSION', '2.1.1' );
+define( 'SEO_READY_VERSION', '2.2.0' );
 
 /**
  * Load the plugin text domain for translation.
@@ -239,6 +239,11 @@ function seo_ready_print_tags() {
 	// Canonical.
 	$meta_tags[] = '<link rel="canonical" href="' . esc_url( $post_meta['canonical'] ?? get_permalink( $post_id ) ) . '" class="seo-ready" />';
 
+	// Redirect.
+	if ( ! empty( $post_meta['redirect'] ) ) {
+		$meta_tags[] = '<meta http-equiv="refresh" content="5;url=' . esc_url( $post_meta['redirect'] ) . '" class="seo-ready" />';
+	}
+
 	// Schema.
 	$meta_tags[] = '<script type="application/ld+json" class="seo-ready">' . seo_ready_get_schema_json_ld( $schema_types, ! empty( $post_meta['schema_article_type'] ) ) . '</script>';
 
@@ -312,7 +317,7 @@ function seo_ready_enqueue_editor() {
 		'seo-ready-editor',
 		untrailingslashit( plugin_dir_url( __FILE__ ) ) . "/assets/js/{$min}plugin.js",
 		array( 'lodash', 'react', 'wp-components', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-i18n', 'wp-plugins', 'wp-primitives' ),
-		'2.1.0',
+		SEO_READY_VERSION,
 		true
 	);
 }
@@ -501,6 +506,10 @@ function seo_ready_get_properties() {
 			'type'              => 'string',
 		),
 		'canonical' => array(
+			'sanitize_callback' => 'sanitize_text_field',
+			'type'              => 'string',
+		),
+		'redirect' => array(
 			'sanitize_callback' => 'sanitize_text_field',
 			'type'              => 'string',
 		),
