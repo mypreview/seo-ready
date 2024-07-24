@@ -14,8 +14,17 @@
 	const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 	const { MediaUpload } = wp.blockEditor;
 	const { SVG, Path } = wp.primitives;
-	const { Button, PanelBody, RangeControl, SelectControl, TabPanel, TextControl, TextareaControl, ToggleControl } =
-		wp.components;
+	const {
+		Button,
+		ExternalLink,
+		PanelBody,
+		RangeControl,
+		SelectControl,
+		TabPanel,
+		TextControl,
+		TextareaControl,
+		ToggleControl,
+	} = wp.components;
 	const { __, sprintf } = wp.i18n;
 
 	registerPlugin( 'seo-ready', {
@@ -474,6 +483,40 @@
 										)
 								  )
 								: el( PanelBody, { initialOpen: true }, 'Other' )
+					),
+					el(
+						PanelBody,
+						{
+							initialOpen: false,
+							title: sprintf(
+								/* translators: %s: Emoji. */
+								__( '%s More', 'seo-ready' ),
+								'⚡'
+							),
+						},
+						el(
+							'p',
+							{},
+							el( 'p', {}, el( 'strong', {}, __( 'Liked the idea behind this plugin?', 'seo-ready' ) ) ),
+							el( Fragment, {}, __( 'Share your experience by leaving this plugin ', 'seo-ready' ) ),
+							el(
+								ExternalLink,
+								{ href: 'https://wordpress.org/support/plugin/seo-ready/reviews/?filter=5#new-post' },
+								/* translators: %s: Emoji. */
+								sprintf( __( '5 stars %s if you like it.', 'seo-ready' ), '⭐⭐⭐⭐⭐' )
+							)
+						),
+						el(
+							'p',
+							{},
+							__( 'You can also make a small ', 'seo-ready' ),
+							el(
+								ExternalLink,
+								{ href: 'https://www.buymeacoffee.com/mahdiyazdani' },
+								__( 'donation', 'seo-ready' )
+							),
+							__( ' so I can continue maintaining and evolving my projects and new ones.', 'seo-ready' )
+						)
 					)
 				)
 			);
