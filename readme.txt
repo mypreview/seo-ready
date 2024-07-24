@@ -1,11 +1,11 @@
 === SEO Ready ===
 Contributors: mahdiyazdani, mypreview, gookaani
-Tags: gutenberg, google search, meta description, meta title, seo, search engine optimization
+Tags: gutenberg, google search, meta description, meta title, seo
 Donate link: https://www.buymeacoffee.com/mahdiyazdani
 Requires at least: 5.5
-Tested up to: 6.5
+Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,6 +93,9 @@ Please share your experience by leaving this plugin [5 shining stars](https://wo
 1. Plugin’s sidebar panel.
 
 == Changelog ===
+= 2.2.1 =
+* Compatibility with WordPress 6.6
+
 = 2.2.0 =
 * Add "Redirect" support using head meta tag.
 
