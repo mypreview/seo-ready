@@ -3,12 +3,10 @@
  * Unistall SEO Ready.
  * Fired when the plugin is uninstalled.
  *
- * @author      Mahdi Yazdani
- * @package     SEO Ready
- * @since       1.0.0
+ * @since 1.0.0
+ *
+ * @package seo-ready
  */
 
-// If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+defined( 'WP_UNINSTALL_PLUGIN' ) || exit; // If uninstall not called from WordPress, then exit.
