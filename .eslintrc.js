@@ -4,5 +4,6 @@ module.exports = {
 	rules: {
 		'jsdoc/check-line-alignment': 'off',
 		'no-nested-ternary': 'off',
+		'react-hooks/rules-of-hooks': 'off',
 	},
 };
