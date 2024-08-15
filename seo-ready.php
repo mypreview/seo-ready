@@ -26,7 +26,7 @@
  * Plugin Name: SEO Ready
  * Plugin URI: https://mypreview.one
  * Description: A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility.
- * Version: 2.2.1
+ * Version: 2.3.0
  * Author: MyPreview
  * Author URI: https://mypreview.one
  * Requires at least: 5.9
