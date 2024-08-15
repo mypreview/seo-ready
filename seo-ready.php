@@ -314,9 +314,17 @@ function seo_ready_enqueue_editor() {
 	$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : trailingslashit( 'minified' );
 
 	wp_enqueue_script(
-		'seo-ready-editor',
+		'seo-ready-plugin',
 		untrailingslashit( plugin_dir_url( __FILE__ ) ) . "/assets/js/{$min}plugin.js",
 		array( 'lodash', 'react', 'wp-components', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-i18n', 'wp-plugins', 'wp-primitives' ),
+		SEO_READY_VERSION,
+		true
+	);
+
+	wp_enqueue_script(
+		'seo-ready-breadcrumbs',
+		untrailingslashit( plugin_dir_url( __FILE__ ) ) . "/assets/js/{$min}breadcrumbs.js",
+		array( 'lodash', 'react', 'wp-components', 'wp-data', 'wp-element', 'wp-i18n', 'wp-primitives' ),
 		SEO_READY_VERSION,
 		true
 	);
