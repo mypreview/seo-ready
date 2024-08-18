@@ -343,49 +343,53 @@ add_action( 'enqueue_block_editor_assets', 'seo_ready_enqueue_editor' );
  */
 function seo_ready_render_breadcrumbs_block( $block_content, $block ) {
 
-	if ( is_admin() ) {
-		return $block_content;
-	}
-
-	if ( 'seo-ready/breadcrumbs' !== $block['blockName'] ) {
+	// Return early if in admin or the block is not 'seo-ready/breadcrumbs'.
+	if ( is_admin() || 'seo-ready/breadcrumbs' !== $block['blockName'] ) {
 		return $block_content;
 	}
 
 	$attributes = $block['attrs'] ?? array();
 	$trails     = seo_ready_generate_breadcrumbs_trails( null, $attributes );
 
+	// Return early if there are no breadcrumb trails to render.
 	if ( empty( $trails ) ) {
 		return $block_content;
 	}
 
-	$output = '';
-
+	$delimiter    = $attributes['delimiter'] ?? '→';
+	$output       = '';
 	$trails_count = count( $trails );
-	$delimiter    = ! isset( $attributes['delimiter'] ) ? '→' : $attributes['delimiter'];
 
 	foreach ( $trails as $index => $trail ) {
 		$output .= '<li class="wp-block-seo-ready-breadcrumbs__crumb">';
 
-		if ( ! empty( $attributes['hideLeadingDelimiter'] ) && ! empty( $delimiter ) && 0 === $index ) {
-			$output .= sprintf( '<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-right:var(--wp--style--block-gap, 0.5em)">%s</span>', esc_html( $delimiter ) );
+		// Render the leading delimiter if conditions are met.
+		if ( 0 === $index && ! ( $attributes['hideLeadingDelimiter'] ?? true ) && ! empty( $delimiter ) ) {
+			$output .= sprintf(
+				'<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-right:var(--wp--style--block-gap, 0.5em)">%s</span>',
+				esc_html( $delimiter )
+			);
 		}
 
-		$has_delimiter = $index < $trails_count - 1;
+		// Determine if the current trail item should be a link or plain text.
+		$is_last_trail = $index === $trails_count - 1;
+		$output       .= $is_last_trail
+			? sprintf( '<span class="wp-block-seo-ready-breadcrumbs__delimiter">%s</span>', esc_html( $trail[0] ) )
+			: sprintf( '<a href="%s">%s</a>', esc_url( $trail[1] ), esc_html( $trail[0] ) );
 
-		if ( $index === $trails_count - 1 ) {
-			$output .= sprintf( '<span class="wp-block-seo-ready-breadcrumbs__crumb">%s</span>', esc_html( $trail[0] ) );
-		} else {
-			$output .= sprintf( '<a href="%s" class="wp-block-seo-ready-breadcrumbs__crumb">%s</a>', esc_url( $trail[1] ), esc_html( $trail[0] ) );
-		}
-
-		if ( $has_delimiter && ! empty( $delimiter ) ) {
-			$output .= sprintf( '<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-left:var(--wp--style--block-gap, 0.5em)">%s</span>', esc_html( $delimiter ) );
+		// Append a delimiter if it's not the last trail item.
+		if ( ! $is_last_trail && ! empty( $delimiter ) ) {
+			$output .= sprintf(
+				'<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-left:var(--wp--style--block-gap, 0.5em)">%s</span>',
+				esc_html( $delimiter )
+			);
 		}
 
 		$output .= '</li>';
 	}
 
-	return preg_replace( '/<\/ol>/', $output . '</ol>', $block_content );
+	// Insert the breadcrumbs markup before closing the `<ol>` tag.
+	return str_replace( '</ol>', $output . '</ol>', $block_content );
 }
 add_filter( 'render_block', 'seo_ready_render_breadcrumbs_block', 10, 2 );
 
