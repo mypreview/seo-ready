@@ -17,6 +17,7 @@
 	const { __, sprintf } = wp.i18n;
 
 	registerBlockType( 'seo-ready/breadcrumbs', {
+		apiVersion: 2,
 		title: __( 'Breadcrumbs', 'seo-ready' ),
 		description: __(
 			'This block displays trail of breadcrumb tracks to help visitors show exactly where they are on the website.',
@@ -64,6 +65,7 @@
 		usesContext: [ 'postId', 'postType' ],
 		supports: {
 			align: [ 'full', 'wide' ],
+			multiple: false,
 			color: {
 				gradients: false,
 				link: true,
@@ -81,18 +83,9 @@
 					flexWrap: 'nowrap',
 				},
 			},
-			multiple: false,
 			spacing: {
-				blockGap: {
-					__experimentalDefault: '2em',
-					sides: [ 'horizontal' ],
-				},
 				margin: [ 'top', 'bottom' ],
 				padding: true,
-				__experimentalDefaultControls: {
-					padding: true,
-					blockGap: true,
-				},
 			},
 			typography: {
 				fontSize: true,
@@ -111,39 +104,46 @@
 		edit: ( { attributes, context: { postId, postType }, setAttributes } ) => {
 			const { delimiter, hideCurrentPageTrail, hideLeadingDelimiter, hideSiteTitle, siteTitleOverride } =
 				attributes;
-			const blockProps = useBlockProps();
+			const blockProps = useBlockProps( {
+				className: 'is-layout-flex',
+				style: { boxSizing: 'border-box', listStyleType: 'none', paddingLeft: 0, margin: 0 },
+			} );
+
 			const { siteTitle, categories, currentPost, parents } = useSelect(
 				( select ) => {
 					const { getEntityRecord, getEditedEntityRecord } = select( 'core' );
 					const siteData = getEntityRecord( 'root', '__unstableBase' );
 					const _currentPost = getEditedEntityRecord( 'postType', postType, postId );
 
-					const parentCategories = [];
-					const parentEntities = [];
-					let categoryId = _currentPost?.categories?.[ 0 ];
-					let currentParentId = _currentPost?.parent;
-
-					while ( currentParentId ) {
-						const nextParent = getEntityRecord( 'postType', postType, currentParentId );
-
-						currentParentId = null;
-
-						if ( nextParent ) {
-							parentEntities.push( nextParent );
-							currentParentId = nextParent?.parent || null;
-						}
+					if ( ! _currentPost ) {
+						return {
+							siteTitle: decodeEntities( siteData?.name ),
+							categories: [],
+							currentPost: null,
+							parents: [],
+						};
 					}
 
-					while ( categoryId ) {
-						const nextCategory = getEntityRecord( 'taxonomy', 'category', categoryId );
+					const getParentEntities = ( initialId, entityType ) => {
+						const parentEntities = [];
+						let currentParentId = initialId;
 
-						categoryId = null;
-
-						if ( nextCategory ) {
-							parentCategories.push( nextCategory );
-							categoryId = nextCategory?.parent || null;
+						while ( currentParentId ) {
+							const parent = getEntityRecord(
+								entityType,
+								entityType === 'postType' ? postType : 'category',
+								currentParentId
+							);
+							if ( ! parent ) break;
+							parentEntities.push( parent );
+							currentParentId = parent.parent || null;
 						}
-					}
+
+						return parentEntities;
+					};
+
+					const parentCategories = getParentEntities( _currentPost?.categories?.[ 0 ], 'taxonomy' );
+					const parentEntities = getParentEntities( _currentPost?.parent, 'postType' );
 
 					return {
 						siteTitle: decodeEntities( siteData?.name ),
@@ -154,8 +154,9 @@
 				},
 				[ postId, postType ]
 			);
+
 			const trails = useMemo( () => {
-				let _trails;
+				let _trails = [];
 
 				if ( parents?.length ) {
 					_trails = map( parents, ( parent ) => parent?.title?.rendered || ' ' );
@@ -165,24 +166,16 @@
 					_trails = [ __( 'Top-level page', 'seo-ready' ), __( 'Child page', 'seo-ready' ) ];
 				}
 
-				// Prepend the site title or site title override if specified.
 				if ( ! hideSiteTitle && siteTitle ) {
-					if ( siteTitleOverride ) {
-						_trails.unshift( siteTitleOverride );
-					} else {
-						_trails.unshift( siteTitle );
-					}
+					_trails.unshift( siteTitleOverride || siteTitle );
 				}
 
-				// Append current page title if set.
 				if ( ! hideCurrentPageTrail ) {
 					_trails.push( currentPost?.title || __( 'Current page', 'seo-ready' ) );
 				}
 
 				return _trails;
 			}, [ categories, parents, hideCurrentPageTrail, hideSiteTitle, siteTitle, siteTitleOverride ] );
-
-			const delimiterSpan = el( 'span', { className: 'wp-block-seo-ready-breadcrumbs__delimiter' }, delimiter );
 
 			return el(
 				Fragment,
@@ -194,68 +187,96 @@
 						el(
 							'li',
 							{ key: index, className: 'wp-block-seo-ready-breadcrumbs__crumb' },
-							delimiter && index === 0 && ! hideLeadingDelimiter ? delimiterSpan : null,
+							delimiter &&
+								index === 0 &&
+								! hideSiteTitle &&
+								! hideLeadingDelimiter &&
+								el(
+									'span',
+									{
+										className: 'wp-block-seo-ready-breadcrumbs__delimiter',
+										style: { marginRight: 'var(--wp--style--block-gap, 0.5em)' },
+									},
+									delimiter
+								),
 							el( 'a', { href: '#', onClick: ( event ) => event.preventDefault() }, crumbTitle ),
-							delimiter && index < trails.length - 1 ? delimiterSpan : null
+							delimiter &&
+								index < trails.length - 1 &&
+								el(
+									'span',
+									{
+										className: 'wp-block-seo-ready-breadcrumbs__delimiter',
+										style: { marginLeft: 'var(--wp--style--block-gap, 0.5em)' },
+									},
+									delimiter
+								)
 						)
-					),
+					)
+				),
+				el(
+					InspectorControls,
+					{},
 					el(
-						InspectorControls,
-						{},
-						el(
-							PanelBody,
-							{ initialOpen: true, title: __( 'Display Settings', 'seo-ready' ) },
+						PanelBody,
+						{ initialOpen: true, title: __( 'Display Settings', 'seo-ready' ) },
+						el( TextControl, {
+							autoComplete: 'off',
+							autoCapitalize: 'none',
+							label: __( 'Delimiter', 'seo-ready' ),
+							onChange: ( value ) => setAttributes( { delimiter: value } ),
+							placeholder: sprintf(
+								/* translators: %s: Default delimiter. */ __( 'e.g. %s', 'seo-ready' ),
+								'→'
+							),
+							value: delimiter || '',
+						} ),
+						delimiter &&
+							el( ToggleControl, {
+								checked: Boolean( hideLeadingDelimiter ),
+								label: sprintf(
+									/* translators: %s: Show or Hide. */ __( '%s leading delimiter?', 'seo-ready' ),
+									hideLeadingDelimiter ? 'Hide' : 'Show'
+								),
+								onChange: () => setAttributes( { hideLeadingDelimiter: ! hideLeadingDelimiter } ),
+							} ),
+						el( ToggleControl, {
+							checked: Boolean( hideCurrentPageTrail ),
+							label: sprintf(
+								/* translators: %s: Show or Hide. */
+								__( '%s current page title?', 'seo-ready' ),
+								hideCurrentPageTrail ? 'Hide' : 'Show'
+							),
+							onChange: () => setAttributes( { hideCurrentPageTrail: ! hideCurrentPageTrail } ),
+						} ),
+						el( ToggleControl, {
+							checked: Boolean( hideSiteTitle ),
+							label: sprintf(
+								/* translators: %s: Show or Hide. */ __( '%s site title?', 'seo-ready' ),
+								hideSiteTitle ? 'Hide' : 'Show'
+							),
+							onChange: () => setAttributes( { hideSiteTitle: ! hideSiteTitle } ),
+						} ),
+						! hideSiteTitle &&
 							el( TextControl, {
 								autoComplete: 'off',
 								autoCapitalize: 'none',
-								label: __( 'Delimiter', 'seo-ready' ),
-								onChange: ( value ) => setAttributes( { delimiter: value } ),
-								placeholder: sprintf(
-									/* translators: %s: Default delimiter. */ __( 'e.g. %s', 'seo-ready' ),
-									'→'
-								),
-								value: delimiter || '',
-							} ),
-							delimiter &&
-								el( ToggleControl, {
-									checked: Boolean( hideLeadingDelimiter ),
-									label: sprintf(
-										/* translators: %s: Show or Hide. */ __( '%s leading delimiter?', 'seo-ready' ),
-										hideLeadingDelimiter ? 'Hide' : 'Show'
-									),
-									onChange: () => setAttributes( { hideLeadingDelimiter: ! hideLeadingDelimiter } ),
-								} ),
-							el( ToggleControl, {
-								checked: Boolean( hideCurrentPageTrail ),
-								label: sprintf(
-									/* translators: %s: Show or Hide. */
-									__( '%s current page title?', 'seo-ready' ),
-									hideCurrentPageTrail ? 'Hide' : 'Show'
-								),
-								onChange: () => setAttributes( { hideCurrentPageTrail: ! hideCurrentPageTrail } ),
-							} ),
-							el( ToggleControl, {
-								checked: Boolean( hideSiteTitle ),
-								label: sprintf(
-									/* translators: %s: Show or Hide. */ __( '%s site title?', 'seo-ready' ),
-									hideSiteTitle ? 'Hide' : 'Show'
-								),
-								onChange: () => setAttributes( { hideSiteTitle: ! hideSiteTitle } ),
-							} ),
-							! hideSiteTitle &&
-								el( TextControl, {
-									autoComplete: 'off',
-									autoCapitalize: 'none',
-									label: __( 'Site Title Override', 'seo-ready' ),
-									onChange: ( value ) => setAttributes( { siteTitleOverride: value } ),
-									placeholder: __( 'e.g. Home', 'seo-ready' ),
-									value: siteTitleOverride || '',
-								} )
-						)
+								label: __( 'Site Title Override', 'seo-ready' ),
+								onChange: ( value ) => setAttributes( { siteTitleOverride: value } ),
+								placeholder: __( 'e.g. Home', 'seo-ready' ),
+								value: siteTitleOverride || '',
+							} )
 					)
 				)
 			);
 		},
-		save: () => null,
+		save: () => {
+			const blockProps = useBlockProps.save( {
+				id: 'breadcrumb',
+				className: 'is-layout-flex',
+				style: { boxSizing: 'border-box', listStyleType: 'none', paddingLeft: 0, margin: 0 },
+			} );
+
+			return el( 'ol', blockProps );
+		},
 	} );
-} )( window.wp, window.loadash );
+} )( window.wp, window.lodash );
