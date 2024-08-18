@@ -11,9 +11,9 @@
 	const { registerBlockType } = wp.blocks;
 	const { useBlockProps, InspectorControls } = wp.blockEditor;
 	const { useSelect } = wp.data;
-	const { PanelBody, TextControl, ToggleControl } = wp.components;
+	const { Disabled, PanelBody, TextControl, ToggleControl } = wp.components;
 	const { decodeEntities } = wp.htmlEntities;
-	const { SVG, Path } = wp.primitives;
+	const { SVG, Rect } = wp.primitives;
 	const { __, sprintf } = wp.i18n;
 
 	registerBlockType( 'seo-ready/breadcrumbs', {
@@ -26,18 +26,10 @@
 		keywords: [ 'menu', 'navigation', 'path', 'trail' ],
 		icon: el(
 			SVG,
-			{ width: 24, height: 24, viewBox: '0 0 19 6', fill: 'none' },
-			el( 'rect', { x: '0.5', width: '3', height: '2' } ),
-			el( 'rect', { x: '15.5', y: '4', width: '3', height: '2' } ),
-			el( Path, { d: 'M4 0H5C5.55228 0 6 0.447715 6 1V6H5C4.44772 6 4 5.55228 4 5V0Z' } ),
-			el( Path, {
-				d: 'M8.5 0H9.5C10.0523 0 10.5 0.447715 10.5 1V6H9.5C8.94772 6 8.5 5.55228 8.5 5V0Z',
-			} ),
-			el( Path, {
-				d: 'M13 0H14C14.5523 0 15 0.447715 15 1V6H14C13.4477 6 13 5.55228 13 5V0Z',
-			} ),
-			el( Path, { d: 'M8 3.82843L6.5 5.32843L6.5 2.5L8 1L8 3.82843Z' } ),
-			el( Path, { d: 'M12.5 3.82843L11 5.32843L11 2.5L12.5 1L12.5 3.82843Z' } )
+			{ width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none' },
+			el( Rect, { x: '4', y: '10.5', width: '6', height: '3', rx: '1.5', fill: 'currentColor' } ),
+			el( Rect, { x: '12', y: '10.5', width: '3', height: '3', rx: '1.5', fill: 'currentColor' } ),
+			el( Rect, { x: '17', y: '10.5', width: '3', height: '3', rx: '1.5', fill: 'currentColor' } )
 		),
 		attributes: {
 			delimiter: {
@@ -66,13 +58,11 @@
 		supports: {
 			align: [ 'full', 'wide' ],
 			multiple: false,
+			html: false,
 			color: {
-				gradients: false,
+				background: true,
+				text: true,
 				link: true,
-				__experimentalDefaultControls: {
-					background: true,
-					text: true,
-				},
 			},
 			layout: {
 				allowSwitching: false,
@@ -91,11 +81,9 @@
 				fontSize: true,
 				lineHeight: true,
 				__experimentalFontFamily: true,
-				__experimentalFontWeight: true,
 				__experimentalFontStyle: true,
+				__experimentalFontWeight: true,
 				__experimentalTextTransform: true,
-				__experimentalTextDecoration: true,
-				__experimentalLetterSpacing: true,
 				__experimentalDefaultControls: {
 					fontSize: true,
 				},
@@ -194,35 +182,39 @@
 				Fragment,
 				{},
 				el(
-					'ol',
-					blockProps,
-					map( trails, ( crumbTitle, index ) =>
-						el(
-							'li',
-							{ key: index, className: 'wp-block-seo-ready-breadcrumbs__crumb' },
-							delimiter &&
-								index === 0 &&
-								! hideSiteTitle &&
-								! hideLeadingDelimiter &&
-								el(
-									'span',
-									{
-										className: 'wp-block-seo-ready-breadcrumbs__delimiter',
-										style: { marginRight: 'var(--wp--style--block-gap, 0.5em)' },
-									},
-									delimiter
-								),
-							el( 'a', { href: '#', onClick: ( event ) => event.preventDefault() }, crumbTitle ),
-							delimiter &&
-								index < trails.length - 1 &&
-								el(
-									'span',
-									{
-										className: 'wp-block-seo-ready-breadcrumbs__delimiter',
-										style: { marginLeft: 'var(--wp--style--block-gap, 0.5em)' },
-									},
-									delimiter
-								)
+					Disabled,
+					{},
+					el(
+						'ol',
+						blockProps,
+						map( trails, ( crumbTitle, index ) =>
+							el(
+								'li',
+								{ key: index, className: 'wp-block-seo-ready-breadcrumbs__crumb' },
+								delimiter &&
+									index === 0 &&
+									! hideSiteTitle &&
+									! hideLeadingDelimiter &&
+									el(
+										'span',
+										{
+											className: 'wp-block-seo-ready-breadcrumbs__delimiter',
+											style: { marginRight: 'var(--wp--style--block-gap, 0.5em)' },
+										},
+										delimiter
+									),
+								el( 'a', { href: '#', onClick: ( event ) => event.preventDefault() }, crumbTitle ),
+								delimiter &&
+									index < trails.length - 1 &&
+									el(
+										'span',
+										{
+											className: 'wp-block-seo-ready-breadcrumbs__delimiter',
+											style: { marginLeft: 'var(--wp--style--block-gap, 0.5em)' },
+										},
+										delimiter
+									)
+							)
 						)
 					)
 				),
