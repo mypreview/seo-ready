@@ -102,11 +102,24 @@
 			},
 		},
 		edit: ( { attributes, context: { postId, postType }, setAttributes } ) => {
-			const { delimiter, hideCurrentPageTrail, hideLeadingDelimiter, hideSiteTitle, siteTitleOverride } =
-				attributes;
+			const {
+				delimiter,
+				hideCurrentPageTrail,
+				hideLeadingDelimiter,
+				hideSiteTitle,
+				siteTitleOverride,
+				backgroundColor,
+				style,
+			} = attributes;
 			const blockProps = useBlockProps( {
 				className: 'is-layout-flex',
-				style: { boxSizing: 'border-box', listStyleType: 'none', paddingLeft: 0, margin: 0 },
+				style: {
+					boxSizing: 'border-box',
+					listStyleType: 'none',
+					paddingLeft: 0,
+					margin: 0,
+					padding: backgroundColor || style?.color?.background ? '1.25em 2.375em' : null,
+				},
 			} );
 
 			const { siteTitle, categories, currentPost, parents } = useSelect(
@@ -269,11 +282,18 @@
 				)
 			);
 		},
-		save: () => {
+		save: ( { attributes } ) => {
+			const { backgroundColor, style } = attributes;
 			const blockProps = useBlockProps.save( {
 				id: 'breadcrumb',
 				className: 'is-layout-flex',
-				style: { boxSizing: 'border-box', listStyleType: 'none', paddingLeft: 0, margin: 0 },
+				style: {
+					boxSizing: 'border-box',
+					listStyleType: 'none',
+					paddingLeft: 0,
+					margin: 0,
+					padding: backgroundColor || style?.color?.background ? '1.25em 2.375em' : null,
+				},
 			} );
 
 			return el( 'ol', blockProps );
