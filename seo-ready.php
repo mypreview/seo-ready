@@ -332,6 +332,64 @@ function seo_ready_enqueue_editor() {
 add_action( 'enqueue_block_editor_assets', 'seo_ready_enqueue_editor' );
 
 /**
+ * Renders the breadcrumbs block.
+ *
+ * @since 2.3.0
+ *
+ * @param string $block_content The block content.
+ * @param array  $block         The block.
+ *
+ * @return string
+ */
+function seo_ready_render_breadcrumbs_block( $block_content, $block ) {
+
+	if ( is_admin() ) {
+		return $block_content;
+	}
+
+	if ( 'seo-ready/breadcrumbs' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	$attributes = $block['attrs'] ?? array();
+	$trails     = seo_ready_generate_breadcrumbs_trails( null, $attributes );
+
+	if ( empty( $trails ) ) {
+		return $block_content;
+	}
+
+	$output = '';
+
+	$trails_count = count( $trails );
+	$delimiter    = ! isset( $attributes['delimiter'] ) ? '→' : $attributes['delimiter'];
+
+	foreach ( $trails as $index => $trail ) {
+		$output .= '<li class="wp-block-seo-ready-breadcrumbs__crumb">';
+
+		if ( ! empty( $attributes['hideLeadingDelimiter'] ) && ! empty( $delimiter ) && 0 === $index ) {
+			$output .= sprintf( '<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-right:var(--wp--style--block-gap, 0.5em)">%s</span>', esc_html( $delimiter ) );
+		}
+
+		$has_delimiter = $index < $trails_count - 1;
+
+		if ( $index === $trails_count - 1 ) {
+			$output .= sprintf( '<span class="wp-block-seo-ready-breadcrumbs__crumb">%s</span>', esc_html( $trail[0] ) );
+		} else {
+			$output .= sprintf( '<a href="%s" class="wp-block-seo-ready-breadcrumbs__crumb">%s</a>', esc_url( $trail[1] ), esc_html( $trail[0] ) );
+		}
+
+		if ( $has_delimiter && ! empty( $delimiter ) ) {
+			$output .= sprintf( '<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-left:var(--wp--style--block-gap, 0.5em)">%s</span>', esc_html( $delimiter ) );
+		}
+
+		$output .= '</li>';
+	}
+
+	return preg_replace( '/<\/ol>/', $output . '</ol>', $block_content );
+}
+add_filter( 'render_block', 'seo_ready_render_breadcrumbs_block', 10, 2 );
+
+/**
  * Enqueue scripts and styles for the frontend.
  *
  * @since 2.1.0
@@ -439,27 +497,19 @@ function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ), $has_
  *
  * @since 2.1.0
  *
+ * @param array $trails Breadcrumb trails.
+ *
  * @return array
  */
-function seo_ready_generate_breadcrumb_list_item() {
+function seo_ready_generate_breadcrumb_list_item( $trails = array() ) {
 
-	// Bail early if WooCommerce breadcrumb class doesn't exist.
-	if ( ! class_exists( 'WC_Breadcrumb' ) ) {
-		return;
+	static $breadcrumb_list_item = array();
+
+	if ( empty( $trails ) ) {
+		return $breadcrumb_list_item;
 	}
 
-	$breadcrumbs = new WC_Breadcrumb();
-
-	// Add homepage link.
-	if ( ! is_front_page() ) {
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		$breadcrumbs->add_crumb( __( 'Home', 'seo-ready' ), apply_filters( 'woocommerce_breadcrumb_home_url', home_url() ) );
-	}
-
-	$breadcrumbs          = $breadcrumbs->generate();
-	$breadcrumb_list_item = array();
-
-	foreach ( $breadcrumbs as $position => $breadcrumb ) {
+	foreach ( $trails as $position => $breadcrumb ) {
 		$breadcrumb_list_item[] = array(
 			'@type'    => 'ListItem',
 			'position' => $position + 1,
@@ -656,3 +706,90 @@ function seo_ready_estimated_reading_time_minutes( $post_id ) {
 
 	return $reading_time_minutes;
 }
+
+/**
+ * Generates breadcrumb trails.
+ *
+ * @since 2.3.0
+ *
+ * @param int   $post_id    Post ID.
+ * @param array $attributes Attributes.
+ *
+ * @return array
+ */
+function seo_ready_generate_breadcrumbs_trails( $post_id = null, $attributes = array() ) {
+
+	$post_id = seo_ready_get_localized_post_id();
+
+	// Leave early if no post id is found.
+	if ( ! seo_ready_is_post_exists( $post_id ) ) {
+		return array();
+	}
+
+	$post_type = get_post_type( $post_id );
+
+	if ( false === $post_type ) {
+		return array();
+	}
+
+	$ancestor_ids       = array();
+	$has_post_hierarchy = is_post_type_hierarchical( $post_type );
+
+	if ( $has_post_hierarchy ) {
+		if ( ! empty( $ancestor_ids ) ) {
+			$ancestor_ids = get_post_ancestors( $post_id );
+		}
+	} else {
+		$terms = get_the_terms( $post_id, 'category' );
+
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			$term           = get_term( $terms[0], 'category' );
+			$ancestor_ids[] = $term->term_id;
+			$ancestor_ids   = array_merge( $ancestor_ids, get_ancestors( $term->term_id, 'category' ) );
+		}
+	}
+
+	$trails = array();
+
+	// Prepend site title breadcrumb if available and set to show.
+	$site_title          = get_bloginfo( 'name' );
+	$site_title_override = $attributes['siteTitleOverride'] ?? '';
+
+	if ( $site_title && empty( $attributes['hideSiteTitle'] ) ) {
+		$site_title = ! empty( $site_title_override ) ? $site_title_override : $site_title;
+		$trails[]   = array(
+			$site_title,
+			get_bloginfo( 'url' ),
+		);
+	}
+
+	if ( $has_post_hierarchy ) {
+		// Construct remaining breadcrumbs from ancestor ids.
+		foreach ( array_reverse( $ancestor_ids ) as $ancestor_id ) {
+			$trails[] = array(
+				get_the_title( $ancestor_id ),
+				get_the_permalink( $ancestor_id ),
+			);
+		}
+	} else {
+		foreach ( array_reverse( $ancestor_ids ) as $ancestor_id ) {
+			$trails[] = array(
+				get_cat_name( $ancestor_id ),
+				get_category_link( $ancestor_id ),
+			);
+		}
+	}
+
+	// Append current page title if set to show.
+	if ( empty( $attributes['hideCurrentPageTrail'] ) ) {
+		$trails[] = array(
+			get_the_title( $post_id ),
+			get_the_permalink( $post_id ),
+		);
+	}
+
+	seo_ready_generate_breadcrumb_list_item( $trails );
+
+	return $trails;
+}
+
