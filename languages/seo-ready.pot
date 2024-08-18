@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: SEO Ready 2.2.1\n"
+"Project-Id-Version: SEO Ready 2.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/seo-ready\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-08-15T11:09:13+00:00\n"
+"POT-Creation-Date: 2024-08-18T16:32:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: seo-ready\n"
@@ -65,75 +65,71 @@ msgstr[1] ""
 msgid "Written by"
 msgstr ""
 
-#: seo-ready.php:456
-msgid "Home"
-msgstr ""
-
-#: assets/js/breadcrumbs.js:20
+#: assets/js/breadcrumbs.js:21
 #: assets/js/minified/breadcrumbs.js:1
 msgid "Breadcrumbs"
 msgstr ""
 
-#: assets/js/breadcrumbs.js:21
+#: assets/js/breadcrumbs.js:22
 #: assets/js/minified/breadcrumbs.js:1
 msgid "This block displays trail of breadcrumb tracks to help visitors show exactly where they are on the website."
 msgstr ""
 
-#: assets/js/breadcrumbs.js:165
+#: assets/js/breadcrumbs.js:167
 #: assets/js/minified/breadcrumbs.js:1
 msgid "Top-level page"
 msgstr ""
 
-#: assets/js/breadcrumbs.js:165
+#: assets/js/breadcrumbs.js:167
 #: assets/js/minified/breadcrumbs.js:1
 msgid "Child page"
 msgstr ""
 
-#: assets/js/breadcrumbs.js:179
+#: assets/js/breadcrumbs.js:175
 #: assets/js/minified/breadcrumbs.js:1
 msgid "Current page"
 msgstr ""
 
-#: assets/js/breadcrumbs.js:207
+#: assets/js/breadcrumbs.js:226
 #: assets/js/minified/breadcrumbs.js:1
 msgid "Display Settings"
 msgstr ""
 
-#: assets/js/breadcrumbs.js:211
+#: assets/js/breadcrumbs.js:230
 #: assets/js/minified/breadcrumbs.js:1
 msgid "Delimiter"
 msgstr ""
 
 #. translators: %s: Default delimiter.
-#: assets/js/breadcrumbs.js:214
+#: assets/js/breadcrumbs.js:233
 #: assets/js/minified/breadcrumbs.js:1
 msgid "e.g. %s"
 msgstr ""
 
 #. translators: %s: Show or Hide.
-#: assets/js/breadcrumbs.js:223
+#: assets/js/breadcrumbs.js:242
 #: assets/js/minified/breadcrumbs.js:1
 msgid "%s leading delimiter?"
 msgstr ""
 
 #. translators: %s: Show or Hide.
-#: assets/js/breadcrumbs.js:232
+#: assets/js/breadcrumbs.js:251
 #: assets/js/minified/breadcrumbs.js:1
 msgid "%s current page title?"
 msgstr ""
 
 #. translators: %s: Show or Hide.
-#: assets/js/breadcrumbs.js:240
+#: assets/js/breadcrumbs.js:259
 #: assets/js/minified/breadcrumbs.js:1
 msgid "%s site title?"
 msgstr ""
 
-#: assets/js/breadcrumbs.js:249
+#: assets/js/breadcrumbs.js:268
 #: assets/js/minified/breadcrumbs.js:1
 msgid "Site Title Override"
 msgstr ""
 
-#: assets/js/breadcrumbs.js:251
+#: assets/js/breadcrumbs.js:270
 #: assets/js/minified/breadcrumbs.js:1
 msgid "e.g. Home"
 msgstr ""
