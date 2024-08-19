@@ -94,7 +94,7 @@ Please share your experience by leaving this plugin [5 shining stars](https://wo
 
 == Changelog ===
 = 2.3.0 =
-Add "Breadcrumbs" editor block.
+* Add "Breadcrumbs" editor block.
 
 = 2.2.1 =
 * Compatibility with WordPress 6.6
