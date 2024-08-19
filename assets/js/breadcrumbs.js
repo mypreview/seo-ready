@@ -106,7 +106,7 @@
 					listStyleType: 'none',
 					paddingLeft: 0,
 					margin: 0,
-					padding: backgroundColor || style?.color?.background ? '1.25em 2.375em' : null,
+					padding: backgroundColor || style?.color?.background ? '1.25em 2.375em' : 0,
 				},
 			} );
 
@@ -182,27 +182,27 @@
 				Fragment,
 				{},
 				el(
-					Disabled,
-					{},
-					el(
-						'ol',
-						blockProps,
-						map( trails, ( crumbTitle, index ) =>
+					'ol',
+					blockProps,
+					map( trails, ( crumbTitle, index ) =>
+						el(
+							'li',
+							{ key: index, className: 'wp-block-seo-ready-breadcrumbs__crumb' },
+							delimiter &&
+								index === 0 &&
+								! hideSiteTitle &&
+								! hideLeadingDelimiter &&
+								el(
+									'span',
+									{
+										className: 'wp-block-seo-ready-breadcrumbs__delimiter',
+										style: { marginRight: 'var(--wp--style--block-gap, 0.5em)' },
+									},
+									delimiter
+								),
 							el(
-								'li',
-								{ key: index, className: 'wp-block-seo-ready-breadcrumbs__crumb' },
-								delimiter &&
-									index === 0 &&
-									! hideSiteTitle &&
-									! hideLeadingDelimiter &&
-									el(
-										'span',
-										{
-											className: 'wp-block-seo-ready-breadcrumbs__delimiter',
-											style: { marginRight: 'var(--wp--style--block-gap, 0.5em)' },
-										},
-										delimiter
-									),
+								Disabled,
+								{},
 								el( 'a', { href: '#', onClick: ( event ) => event.preventDefault() }, crumbTitle ),
 								delimiter &&
 									index < trails.length - 1 &&
@@ -240,7 +240,7 @@
 								checked: Boolean( hideLeadingDelimiter ),
 								label: sprintf(
 									/* translators: %s: Show or Hide. */ __( '%s leading delimiter?', 'seo-ready' ),
-									hideLeadingDelimiter ? 'Hide' : 'Show'
+									hideLeadingDelimiter ? 'Show' : 'Hide'
 								),
 								onChange: () => setAttributes( { hideLeadingDelimiter: ! hideLeadingDelimiter } ),
 							} ),
@@ -249,7 +249,7 @@
 							label: sprintf(
 								/* translators: %s: Show or Hide. */
 								__( '%s current page title?', 'seo-ready' ),
-								hideCurrentPageTrail ? 'Hide' : 'Show'
+								hideCurrentPageTrail ? 'Show' : 'Hide'
 							),
 							onChange: () => setAttributes( { hideCurrentPageTrail: ! hideCurrentPageTrail } ),
 						} ),
@@ -257,7 +257,7 @@
 							checked: Boolean( hideSiteTitle ),
 							label: sprintf(
 								/* translators: %s: Show or Hide. */ __( '%s site title?', 'seo-ready' ),
-								hideSiteTitle ? 'Hide' : 'Show'
+								hideSiteTitle ? 'Show' : 'Hide'
 							),
 							onChange: () => setAttributes( { hideSiteTitle: ! hideSiteTitle } ),
 						} ),
