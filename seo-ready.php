@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SEO_READY_VERSION', '2.2.1' );
+define( 'SEO_READY_VERSION', '2.3.0' );
 
 /**
  * Load the plugin text domain for translation.
