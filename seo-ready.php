@@ -26,7 +26,7 @@
  * Plugin Name: SEO Ready
  * Plugin URI: https://mypreview.one
  * Description: A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility.
- * Version: 2.2.1
+ * Version: 2.3.0
  * Author: MyPreview
  * Author URI: https://mypreview.one
  * Requires at least: 5.9
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SEO_READY_VERSION', '2.2.1' );
+define( 'SEO_READY_VERSION', '2.3.0' );
 
 /**
  * Load the plugin text domain for translation.
@@ -314,14 +314,84 @@ function seo_ready_enqueue_editor() {
 	$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : trailingslashit( 'minified' );
 
 	wp_enqueue_script(
-		'seo-ready-editor',
+		'seo-ready-plugin',
 		untrailingslashit( plugin_dir_url( __FILE__ ) ) . "/assets/js/{$min}plugin.js",
 		array( 'lodash', 'react', 'wp-components', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-i18n', 'wp-plugins', 'wp-primitives' ),
 		SEO_READY_VERSION,
 		true
 	);
+
+	wp_enqueue_script(
+		'seo-ready-breadcrumbs',
+		untrailingslashit( plugin_dir_url( __FILE__ ) ) . "/assets/js/{$min}breadcrumbs.js",
+		array( 'lodash', 'react', 'wp-components', 'wp-data', 'wp-element', 'wp-i18n', 'wp-primitives' ),
+		SEO_READY_VERSION,
+		true
+	);
 }
 add_action( 'enqueue_block_editor_assets', 'seo_ready_enqueue_editor' );
+
+/**
+ * Renders the breadcrumbs block.
+ *
+ * @since 2.3.0
+ *
+ * @param string $block_content The block content.
+ * @param array  $block         The block.
+ *
+ * @return string
+ */
+function seo_ready_render_breadcrumbs_block( $block_content, $block ) {
+
+	// Return early if in admin or the block is not 'seo-ready/breadcrumbs'.
+	if ( is_admin() || 'seo-ready/breadcrumbs' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	$attributes = $block['attrs'] ?? array();
+	$trails     = seo_ready_generate_breadcrumbs_trails( null, $attributes );
+
+	// Return early if there are no breadcrumb trails to render.
+	if ( empty( $trails ) ) {
+		return $block_content;
+	}
+
+	$delimiter    = $attributes['delimiter'] ?? '→';
+	$output       = '';
+	$trails_count = count( $trails );
+
+	foreach ( $trails as $index => $trail ) {
+		$output .= '<li class="wp-block-seo-ready-breadcrumbs__crumb">';
+
+		// Render the leading delimiter if conditions are met.
+		if ( 0 === $index && ! ( $attributes['hideLeadingDelimiter'] ?? true ) && ! empty( $delimiter ) ) {
+			$output .= sprintf(
+				'<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-right:var(--wp--style--block-gap, 0.5em)">%s</span>',
+				esc_html( $delimiter )
+			);
+		}
+
+		// Determine if the current trail item should be a link or plain text.
+		$is_last_trail = $index === $trails_count - 1;
+		$output       .= $is_last_trail
+			? sprintf( '<span class="wp-block-seo-ready-breadcrumbs__delimiter">%s</span>', esc_html( $trail[0] ) )
+			: sprintf( '<a href="%s">%s</a>', esc_url( $trail[1] ), esc_html( $trail[0] ) );
+
+		// Append a delimiter if it's not the last trail item.
+		if ( ! $is_last_trail && ! empty( $delimiter ) ) {
+			$output .= sprintf(
+				'<span class="wp-block-seo-ready-breadcrumbs__delimiter" style="margin-left:var(--wp--style--block-gap, 0.5em)">%s</span>',
+				esc_html( $delimiter )
+			);
+		}
+
+		$output .= '</li>';
+	}
+
+	// Insert the breadcrumbs markup before closing the `<ol>` tag.
+	return str_replace( '</ol>', $output . '</ol>', $block_content );
+}
+add_filter( 'render_block', 'seo_ready_render_breadcrumbs_block', 10, 2 );
 
 /**
  * Enqueue scripts and styles for the frontend.
@@ -431,27 +501,19 @@ function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ), $has_
  *
  * @since 2.1.0
  *
+ * @param array $trails Breadcrumb trails.
+ *
  * @return array
  */
-function seo_ready_generate_breadcrumb_list_item() {
+function seo_ready_generate_breadcrumb_list_item( $trails = array() ) {
 
-	// Bail early if WooCommerce breadcrumb class doesn't exist.
-	if ( ! class_exists( 'WC_Breadcrumb' ) ) {
-		return;
+	static $breadcrumb_list_item = array();
+
+	if ( empty( $trails ) ) {
+		return $breadcrumb_list_item;
 	}
 
-	$breadcrumbs = new WC_Breadcrumb();
-
-	// Add homepage link.
-	if ( ! is_front_page() ) {
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		$breadcrumbs->add_crumb( __( 'Home', 'seo-ready' ), apply_filters( 'woocommerce_breadcrumb_home_url', home_url() ) );
-	}
-
-	$breadcrumbs          = $breadcrumbs->generate();
-	$breadcrumb_list_item = array();
-
-	foreach ( $breadcrumbs as $position => $breadcrumb ) {
+	foreach ( $trails as $position => $breadcrumb ) {
 		$breadcrumb_list_item[] = array(
 			'@type'    => 'ListItem',
 			'position' => $position + 1,
@@ -648,3 +710,90 @@ function seo_ready_estimated_reading_time_minutes( $post_id ) {
 
 	return $reading_time_minutes;
 }
+
+/**
+ * Generates breadcrumb trails.
+ *
+ * @since 2.3.0
+ *
+ * @param int   $post_id    Post ID.
+ * @param array $attributes Attributes.
+ *
+ * @return array
+ */
+function seo_ready_generate_breadcrumbs_trails( $post_id = null, $attributes = array() ) {
+
+	$post_id = seo_ready_get_localized_post_id();
+
+	// Leave early if no post id is found.
+	if ( ! seo_ready_is_post_exists( $post_id ) ) {
+		return array();
+	}
+
+	$post_type = get_post_type( $post_id );
+
+	if ( false === $post_type ) {
+		return array();
+	}
+
+	$ancestor_ids       = array();
+	$has_post_hierarchy = is_post_type_hierarchical( $post_type );
+
+	if ( $has_post_hierarchy ) {
+		if ( ! empty( $ancestor_ids ) ) {
+			$ancestor_ids = get_post_ancestors( $post_id );
+		}
+	} else {
+		$terms = get_the_terms( $post_id, 'category' );
+
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			$term           = get_term( $terms[0], 'category' );
+			$ancestor_ids[] = $term->term_id;
+			$ancestor_ids   = array_merge( $ancestor_ids, get_ancestors( $term->term_id, 'category' ) );
+		}
+	}
+
+	$trails = array();
+
+	// Prepend site title breadcrumb if available and set to show.
+	$site_title          = get_bloginfo( 'name' );
+	$site_title_override = $attributes['siteTitleOverride'] ?? '';
+
+	if ( $site_title && empty( $attributes['hideSiteTitle'] ) ) {
+		$site_title = ! empty( $site_title_override ) ? $site_title_override : $site_title;
+		$trails[]   = array(
+			$site_title,
+			get_bloginfo( 'url' ),
+		);
+	}
+
+	if ( $has_post_hierarchy ) {
+		// Construct remaining breadcrumbs from ancestor ids.
+		foreach ( array_reverse( $ancestor_ids ) as $ancestor_id ) {
+			$trails[] = array(
+				get_the_title( $ancestor_id ),
+				get_the_permalink( $ancestor_id ),
+			);
+		}
+	} else {
+		foreach ( array_reverse( $ancestor_ids ) as $ancestor_id ) {
+			$trails[] = array(
+				get_cat_name( $ancestor_id ),
+				get_category_link( $ancestor_id ),
+			);
+		}
+	}
+
+	// Append current page title if set to show.
+	if ( empty( $attributes['hideCurrentPageTrail'] ) ) {
+		$trails[] = array(
+			get_the_title( $post_id ),
+			get_the_permalink( $post_id ),
+		);
+	}
+
+	seo_ready_generate_breadcrumb_list_item( $trails );
+
+	return $trails;
+}
+
