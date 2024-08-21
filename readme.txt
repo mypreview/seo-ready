@@ -12,9 +12,30 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 A lightweight SEO plugin to generate most commonly used meta tags, but designed for privacy, speed, and accessibility.
 
 == Description ==
-When it comes to SEO there are a lot of things you need to consider to keep your website up to date. This plugin aims to help you with the technical side of On-Page SEO and provides a graphical user interface to generate a set of most commonly used meta tags, in less time than it takes to brew a cup of coffee.
+Enhance your website's search engine visibility while optimizing content for both search engines and social media platforms. Whether you're just starting out or are a seasoned webmaster, SEO Ready simplifies the process of improving your site’s rankings with an essential suite of SEO tools.
 
-*Even though the term “tag” is not 100% correct in many places (some tags should correctly be called “elements” or “attributes”), people use this term because they tend to look for tags rather than the correct technical terms.*
+## SEO Optimization Options
+* **Title**: Alternative post title to Increase your click-through rates by setting more unique, engaging titles that stand out in search engine results.
+* **Keywords**: Add keywords to ensure search engines grasp the core topics of your posts.
+* **Description**: Enter irresistible meta descriptions to draw more traffic from search engine results pages.
+* **Canonical URL**: Prevent duplicate content issues by designating canonical URLs, helping search engines identify the original source.
+* **Redirect URL**: Easily redirect users to another URL while maintaining your website’s SEO strength.
+* **Search Visibility Toggle**: Control which posts get indexed by search engines, allowing you to exclude specific pages when necessary.
+* **Link Follow Control**: Fine-tune your SEO strategy by deciding whether search engines should follow or ignore the links within your content.
+
+## Schema Markup
+Optimize the way search engines understand and display your content. Selecting relevant schema types will improve how pages and posts are interpreted and make them more likely to display in rich snippets, potentially increasing visibility in search results. The article type dropdown menu will also allow you to customize the schema settings based on the content, thus properly presenting the content in the search engine listings.
+
+## Social Media Integration
+Control over how the content appears on platforms like Facebook and Twitter/X, including what images, titles, and descriptions to use ensures posts look their best when shared, captures attention and generates engagement. 
+
+## Breadcrumbs Block
+The schema-enhanced Breadcrumbs block helps boost both user navigation and SEO. Breadcrumbs not only help users understand their location on a site but also provide search engines with valuable context.
+The Breadcrumbs block settings will allow you to personalize the delimiter, hide the current page title, hide or override site title (e.g., change it to "Home"), and customize the block styles with tweaking typography, padding, margin, and color to seamlessly blend with your site’s design.
+
+## Why Choose SEO Ready?
+SEO Ready delivers all the essential tools needed to optimize your WordPress website for search engines and social media, helping you reach a wider audience and significantly improving your site’s visibility. Its user-friendly interface and comprehensive feature set make SEO Ready the perfect choice for anyone looking to enhance their SEO efforts with minimal hassle.
+
 
 == Installation ==
 = Minimum Requirements =
@@ -38,59 +59,37 @@ The manual installation method requires downloading the plugin and uploading it 
 Automatic updates should work smoothly, but we still recommend you back up your site.
 
 == Frequently Asked Questions ==
-= Where do I find the SEO panel for a post or page? =
-To find the SEO panel for a post/page, in the block editor screen, click the “Analytics” icon at the top right to open the SEO sidebar.
+= What is SEO Ready, and how can it help my website? =
+SEO Ready is a WordPress plugin designed to optimize your website for search engines and social media platforms. It offers features like custom SEO titles, meta descriptions, schema markup, and social media integration, all of which work together to improve your website’s visibility and ranking.
 
-= Which post types are supported? =
-Any (custom) post type that comes with the new block editor (Gutenberg) support would be able to have access to the SEO panel directly from the edit screen.
+= Do I need to be an SEO expert to use SEO Ready? =
+Not at all! SEO Ready is designed to be user-friendly, making it accessible to both beginners and experienced webmasters. The intuitive interface guides you through the process of optimizing your content, with no technical knowledge required.
 
-= Which meta tags are supported? =
+= Can I customize the SEO settings for each page or post individually? =
+Yes, SEO Ready allows you to customize SEO settings on a per-page or per-post basis. You can set unique titles, keywords, meta descriptions, and more to ensure each piece of content is optimized for search engines.
 
-* Title
-* Keywords
-* Description
-* Canonical
-* No-index
-* No-follow
+= How does the Schema Markup feature benefit my website? =
+Schema Markup helps search engines better understand your content, increasing the chances of your site appearing in rich snippets. This can lead to higher click-through rates and better visibility in search results.
 
-= I don’t see the SEO panel on my edit screen! Why is that? =
-You likely need to enable the REST API for your post type before it will work. By default, the REST API parameter turned off when you register a custom post type. Therefore, you need to intentionally turn it ON in your code.
+= Can I control how my content appears on social media platforms? =
+Absolutely! SEO Ready includes social media integration features that allow you to customize the image, title, and description for your posts when they’re shared on platforms like Facebook and Twitter/X.
 
-**Note**: The `show_in_rest` option must be set to `true`.
+= What is the Breadcrumbs Block, and how does it improve my SEO? =
+The Breadcrumbs Block adds a navigational aid to your pages, helping users understand their location on your site. It also provides search engines with better context, which can enhance your site's SEO and improve the user experience.
 
-= How is data privacy (GDPR) being ensured? =
-To ensure the plugin is as privacy focused as possible it:
+= Does SEO Ready work with all WordPress themes? =
+SEO Ready is designed to be compatible with most WordPress themes. However, if you encounter any issues, our support team is available to help you ensure the plugin works seamlessly with your specific theme.
 
-* Does not track your usage of the plugin.
-* Does not phone out. No data is shared with third parties.
-* Does not add generator comments, or secret comments to your site’s HTML.
+= Can I exclude specific pages from being indexed by search engines? =
+Yes, SEO Ready includes a search visibility toggle that allows you to exclude specific pages or posts from being indexed by search engines, giving you full control over what content is visible.
 
-= How do I get help with the plugin? =
-The easiest way to receive support is to “Create a new topic” by visiting Community Forums page [here](https://wordpress.org/support/plugin/seo-ready "SEO Ready Support Forum").
-
-Make sure to check the “Notify me of follow-up replies via email” checkbox to receive notifications, as soon as a reply posted to your question or inquiry.
-
-*Please note that this is an opensource 100% volunteer project, and it’s not unusual to get reply days or even weeks later.*
-
-= Can I help in translating this plugin into a new language? =
-The plugin is fully translation-ready and localized using the GNU framework, and translators are welcome to contribute to the plugin.
-
-Here’s the the [WordPress translation website &#8594;](https://translate.wordpress.org/projects/wp-plugins/seo-ready "WordPress translation website")
-
-= How do I contribute to this plugin? =
-We welcome contributions in any form, and you can help reporting, testing, and detailing bugs.
-
-Here’s the [GitHub development repository &#8594;](https://github.com/mypreview/seo-ready "GitHub development repository")
-
-= Did you like the idea behind this plugin? =
-If you or your company use any of my projects or like what I’m doing, please consider [making a donation](https://www.buymeacoffee.com/mahdiyazdani) so I can continue maintaining and evolving all my projects and new ones. I’m in this for the long run.
-
---AND/OR--
-
-Please share your experience by leaving this plugin [5 shining stars](https://wordpress.org/support/plugin/seo-ready/reviews/ "Rate SEO Ready 5 stars") if you like it, thanks!
+= Is there customer support available for SEO Ready? =
+Yes, our dedicated support team is ready to assist you with any questions or issues you may encounter while using SEO Ready. We’re here to help you get the most out of the plugin.
 
 == Screenshots ==
-1. Plugin’s sidebar panel.
+1. A detailed view of the SEO settings in the SEO Ready plugin, showcasing options for custom titles, keywords, meta descriptions, canonical URLs, and more.
+2. Easily select and customize schema types with SEO Ready to enhance how search engines interpret your content.
+3. Customize how your content appears on Facebook and Twitter/X with the SEO Ready plugin's social media settings.
 
 == Changelog ===
 = 2.3.0 =
