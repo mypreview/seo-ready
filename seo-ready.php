@@ -744,6 +744,11 @@ function seo_ready_generate_breadcrumbs_trails( $post_id = null, $attributes = a
 
 	$trails = $breadcrumbs->generate();
 
+	// Leave early if no trails are found.
+	if ( empty( $trails ) || count( $trails ) < 2 ) {
+		return array();
+	}
+
 	seo_ready_generate_breadcrumb_list_item( $trails );
 
 	return $trails;
