@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: SEO Ready 2.3.0\n"
+"Project-Id-Version: SEO Ready 2.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/seo-ready\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-08-19T12:45:57+00:00\n"
+"POT-Creation-Date: 2024-08-22T18:16:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: seo-ready\n"
@@ -34,34 +34,34 @@ msgid "MyPreview"
 msgstr ""
 
 #. translators: 1: Open anchor tag, 2: Close anchor tag.
-#: seo-ready.php:79
+#: seo-ready.php:86
 msgctxt "plugin link"
 msgid "%1$sCommunity support%2$s"
 msgstr ""
 
 #. translators: 1: Open anchor tag, 2: Close anchor tag.
-#: seo-ready.php:81
+#: seo-ready.php:88
 msgctxt "plugin link"
 msgid "%1$sDonate%2$s"
 msgstr ""
 
 #. translators: 1: Open anchor tag, 2: Close anchor tag.
-#: seo-ready.php:81
+#: seo-ready.php:88
 msgid "Donate to support this plugin"
 msgstr ""
 
-#: seo-ready.php:222
+#: seo-ready.php:229
 msgid "Est. reading time"
 msgstr ""
 
 #. translators: %s: Estimated reading time in minutes.
-#: seo-ready.php:224
+#: seo-ready.php:231
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: seo-ready.php:226
+#: seo-ready.php:233
 msgid "Written by"
 msgstr ""
 

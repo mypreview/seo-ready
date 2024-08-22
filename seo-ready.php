@@ -26,7 +26,7 @@
  * Plugin Name: SEO Ready
  * Plugin URI: https://mypreview.one
  * Description: A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility.
- * Version: 2.3.0
+ * Version: 2.3.1
  * Author: MyPreview
  * Author URI: https://mypreview.one
  * Requires at least: 5.9
@@ -37,6 +37,8 @@
  * Domain Path: /languages
  */
 
+use SEO_Ready\Breadcrumbs;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	header( 'Status: 403 Forbidden' );
 	header( 'HTTP/1.1 403 Forbidden' );
@@ -44,6 +46,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'SEO_READY_VERSION', '2.3.0' );
+
+/**
+ * Loads the PSR-4 autoloader implementation.
+ */
+require_once untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/vendor/autoload.php';
 
 /**
  * Load the plugin text domain for translation.
@@ -723,37 +730,7 @@ function seo_ready_estimated_reading_time_minutes( $post_id ) {
  */
 function seo_ready_generate_breadcrumbs_trails( $post_id = null, $attributes = array() ) {
 
-	$post_id = seo_ready_get_localized_post_id();
-
-	// Leave early if no post id is found.
-	if ( ! seo_ready_is_post_exists( $post_id ) ) {
-		return array();
-	}
-
-	$post_type = get_post_type( $post_id );
-
-	if ( false === $post_type ) {
-		return array();
-	}
-
-	$ancestor_ids       = array();
-	$has_post_hierarchy = is_post_type_hierarchical( $post_type );
-
-	if ( $has_post_hierarchy ) {
-		if ( ! empty( $ancestor_ids ) ) {
-			$ancestor_ids = get_post_ancestors( $post_id );
-		}
-	} else {
-		$terms = get_the_terms( $post_id, 'category' );
-
-		if ( $terms && ! is_wp_error( $terms ) ) {
-			$term           = get_term( $terms[0], 'category' );
-			$ancestor_ids[] = $term->term_id;
-			$ancestor_ids   = array_merge( $ancestor_ids, get_ancestors( $term->term_id, 'category' ) );
-		}
-	}
-
-	$trails = array();
+	$breadcrumbs = new Breadcrumbs\Trails();
 
 	// Prepend site title breadcrumb if available and set to show.
 	$site_title          = get_bloginfo( 'name' );
@@ -761,36 +738,11 @@ function seo_ready_generate_breadcrumbs_trails( $post_id = null, $attributes = a
 
 	if ( $site_title && empty( $attributes['hideSiteTitle'] ) ) {
 		$site_title = ! empty( $site_title_override ) ? $site_title_override : $site_title;
-		$trails[]   = array(
-			$site_title,
-			get_bloginfo( 'url' ),
-		);
+
+		$breadcrumbs->add_crumb( $site_title, get_bloginfo( 'url' ) );
 	}
 
-	if ( $has_post_hierarchy ) {
-		// Construct remaining breadcrumbs from ancestor ids.
-		foreach ( array_reverse( $ancestor_ids ) as $ancestor_id ) {
-			$trails[] = array(
-				get_the_title( $ancestor_id ),
-				get_the_permalink( $ancestor_id ),
-			);
-		}
-	} else {
-		foreach ( array_reverse( $ancestor_ids ) as $ancestor_id ) {
-			$trails[] = array(
-				get_cat_name( $ancestor_id ),
-				get_category_link( $ancestor_id ),
-			);
-		}
-	}
-
-	// Append current page title if set to show.
-	if ( empty( $attributes['hideCurrentPageTrail'] ) ) {
-		$trails[] = array(
-			get_the_title( $post_id ),
-			get_the_permalink( $post_id ),
-		);
-	}
+	$trails = $breadcrumbs->generate();
 
 	seo_ready_generate_breadcrumb_list_item( $trails );
 

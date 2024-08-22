@@ -2,7 +2,7 @@
 	"archive": {
 		"exclude": [
 			"!/languages",
-			"vendor",
+			"!vendor/*",
 			"node_modules",
 			"CODE_OF_CONDUCT.md",
 			"composer.json",
@@ -41,7 +41,8 @@
 	"license": "GPL-3.0",
 	"name": "mypreview/seo-ready",
 	"require": {
-		"php": ">=7.4"
+		"php": ">=7.4",
+		"mahdiyazdani/wp-breadcrumbs": "^1.0"
 	},
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "0.7.2",
