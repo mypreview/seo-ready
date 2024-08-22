@@ -5,7 +5,7 @@ Donate link: https://www.buymeacoffee.com/mahdiyazdani
 Requires at least: 5.5
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -27,7 +27,7 @@ Enhance your website's search engine visibility while optimizing content for bot
 Optimize the way search engines understand and display your content. Selecting relevant schema types will improve how pages and posts are interpreted and make them more likely to display in rich snippets, potentially increasing visibility in search results. The article type dropdown menu will also allow you to customize the schema settings based on the content, thus properly presenting the content in the search engine listings.
 
 ## Social Media Integration
-Control over how the content appears on platforms like Facebook and Twitter/X, including what images, titles, and descriptions to use ensures posts look their best when shared, captures attention and generates engagement. 
+Control over how the content appears on platforms like Facebook and Twitter/X, including what images, titles, and descriptions to use ensures posts look their best when shared, captures attention and generates engagement.
 
 ## Breadcrumbs Block
 The schema-enhanced Breadcrumbs block helps boost both user navigation and SEO. Breadcrumbs not only help users understand their location on a site but also provide search engines with valuable context.
@@ -92,6 +92,9 @@ Yes, our dedicated support team is ready to assist you with any questions or iss
 3. Customize how your content appears on Facebook and Twitter/X with the SEO Ready plugin's social media settings.
 
 == Changelog ===
+= 2.3.1 =
+* Fix Breadcrumbs trails.
+
 = 2.3.0 =
 * Add "Breadcrumbs" editor block.
 
