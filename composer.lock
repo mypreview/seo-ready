@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mahdiyazdani/wp-breadcrumbs.git",
-                "reference": "0d493c67f9413b4324e4b16b695e2b5bd4803627"
+                "reference": "743dd87a87ccddc02733e28d2e18378b492d1ee8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mahdiyazdani/wp-breadcrumbs/zipball/0d493c67f9413b4324e4b16b695e2b5bd4803627",
-                "reference": "0d493c67f9413b4324e4b16b695e2b5bd4803627",
+                "url": "https://api.github.com/repos/mahdiyazdani/wp-breadcrumbs/zipball/743dd87a87ccddc02733e28d2e18378b492d1ee8",
+                "reference": "743dd87a87ccddc02733e28d2e18378b492d1ee8",
                 "shasum": ""
             },
             "require": {
@@ -63,7 +63,7 @@
                 "issues": "https://github.com/mahdiyazdani/wp-breadcrumbs/issues",
                 "source": "https://github.com/mahdiyazdani/wp-breadcrumbs/tree/1.0.0"
             },
-            "time": "2024-08-22T10:27:06+00:00"
+            "time": "2024-08-22T18:25:16+00:00"
         }
     ],
     "packages-dev": [
