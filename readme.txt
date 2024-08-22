@@ -93,7 +93,7 @@ Yes, our dedicated support team is ready to assist you with any questions or iss
 
 == Changelog ===
 = 2.3.1 =
-* Fix Breadcrumbs trails.
+* Fix blog breadcrumb trails not displaying in the single post view.
 
 = 2.3.0 =
 * Add "Breadcrumbs" editor block.
