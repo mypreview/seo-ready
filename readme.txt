@@ -36,7 +36,6 @@ The Breadcrumbs block settings will allow you to personalize the delimiter, hide
 ## Why Choose SEO Ready?
 SEO Ready delivers all the essential tools needed to optimize your WordPress website for search engines and social media, helping you reach a wider audience and significantly improving your site’s visibility. Its user-friendly interface and comprehensive feature set make SEO Ready the perfect choice for anyone looking to enhance their SEO efforts with minimal hassle.
 
-
 == Installation ==
 = Minimum Requirements =
 
