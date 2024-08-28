@@ -5,7 +5,7 @@ Donate link: https://www.buymeacoffee.com/mahdiyazdani
 Requires at least: 5.5
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 2.3.1
+Stable tag: 2.4.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -91,6 +91,12 @@ Yes, our dedicated support team is ready to assist you with any questions or iss
 3. Customize how your content appears on Facebook and Twitter/X with the SEO Ready plugin's social media settings.
 
 == Changelog ===
+= 2.4.0 =
+* Add "FAQ" editor block.
+
+= 2.3.2 =
+* Fix fatal error when endpoint function is not available.
+
 = 2.3.1 =
 * Fix blog breadcrumb trails not displaying in the single post view.
 
