@@ -23,9 +23,9 @@
 		"lint:wpcs": "composer lint:wpcs",
 		"lint:wpcs:fix": "composer lint:wpcbf",
 		"makepot": "composer make-pot",
-		"minify": "cross-env BABEL_ENV=default NODE_ENV=production npm run minify:css && npm run minify:js && npm run minify:css:path",
+		"minify": "cross-env BABEL_ENV=default NODE_ENV=production npm run minify:js",
 		"minify:css:path": "replace-in-files --string='../' --replacement='../../' assets/css/minified",
-		"minify:css": "rimraf assets/css/minified && cleancss --batch --batch-suffix '' assets/css/*.css --output assets/css/minified",
+		"minify:css": "rimraf assets/css/minified && cleancss --batch --batch-suffix '' assets/css/*.css --output assets/css/minified && npm run minify:css:path",
 		"minify:js": "rimraf assets/js/minified && npm run format && babel assets/js/*.js --out-dir assets/js/minified --no-comments --minified --presets=@babel/preset-env"
 	},
 	"devDependencies": {
