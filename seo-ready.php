@@ -477,7 +477,7 @@ function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ), $has_
 		'inLanguage' => $language,
 		'isPartOf'   => array( '@id' => path_join( $blog_url, '#website' ) ),
 		'breadcrumb' => array( '@id' => path_join( $current_url, '#breadcrumb' ) ),
-	) : null;
+	) : array();
 
 	// BreadcrumbList schema type.
 	$breadcrumb_list = array(
@@ -534,13 +534,15 @@ function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ), $has_
 	// Final schema graph.
 	$graph = array(
 		'@context' => 'https://schema.org',
-		'@graph'   => array_filter(
-			array(
-				$webpage_itempage,
-				$faq_list,
-				$breadcrumb_list,
-				$website,
-				$person,
+		'@graph'   => array_values( // Make sure the array is indexed.
+			array_filter( // Remove empty values.
+				array(
+					$webpage_itempage,
+					$faq_list,
+					$breadcrumb_list,
+					$website,
+					$person,
+				)
 			)
 		),
 	);
