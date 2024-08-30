@@ -26,7 +26,7 @@
  * Plugin Name: SEO Ready
  * Plugin URI: https://mypreview.one
  * Description: A lightweight SEO plugin to generate most commonly used meta tags. Designed for privacy, speed, and accessibility.
- * Version: 2.3.1
+ * Version: 2.4.0
  * Author: MyPreview
  * Author URI: https://mypreview.one
  * Requires at least: 5.9
@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SEO_READY_VERSION', '2.3.0' );
+define( 'SEO_READY_VERSION', '2.4.0' );
 
 /**
  * Loads the PSR-4 autoloader implementation.
@@ -331,7 +331,15 @@ function seo_ready_enqueue_editor() {
 	wp_enqueue_script(
 		'seo-ready-breadcrumbs',
 		untrailingslashit( plugin_dir_url( __FILE__ ) ) . "/assets/js/{$min}breadcrumbs.js",
-		array( 'lodash', 'react', 'wp-components', 'wp-data', 'wp-element', 'wp-i18n', 'wp-primitives' ),
+		array( 'lodash', 'react', 'wp-components', 'wp-data', 'wp-element', 'wp-i18n', 'wp-primitives', 'wp-html-entities' ),
+		SEO_READY_VERSION,
+		true
+	);
+
+	wp_enqueue_script(
+		'seo-ready-faq',
+		untrailingslashit( plugin_dir_url( __FILE__ ) ) . "/assets/js/{$min}faq.js",
+		array( 'lodash', 'react', 'wp-components', 'wp-element', 'wp-i18n' ),
 		SEO_READY_VERSION,
 		true
 	);
@@ -401,6 +409,29 @@ function seo_ready_render_breadcrumbs_block( $block_content, $block ) {
 add_filter( 'render_block', 'seo_ready_render_breadcrumbs_block', 10, 2 );
 
 /**
+ * Renders the FAQ block.
+ *
+ * @since 2.4.0
+ *
+ * @param string $block_content The block content.
+ * @param array  $block         The block.
+ *
+ * @return string
+ */
+function seo_ready_render_faq_block( $block_content, $block ) {
+
+	// Return early if in admin or the block is not 'seo-ready/breadcrumbs'.
+	if ( is_admin() || 'seo-ready/faq' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	seo_ready_generate_faq_page_item( $block['innerBlocks'] );
+
+	return $block_content;
+}
+add_filter( 'render_block', 'seo_ready_render_faq_block', 10, 2 );
+
+/**
  * Enqueue scripts and styles for the frontend.
  *
  * @since 2.1.0
@@ -412,95 +443,149 @@ add_filter( 'render_block', 'seo_ready_render_breadcrumbs_block', 10, 2 );
  */
 function seo_ready_get_schema_json_ld( $schema_types = array( 'WebPage' ), $has_person_graph = false ) {
 
-	$person      = array();
 	$current_url = get_permalink();
+	$blog_url    = get_bloginfo( 'url' );
+	$blog_name   = get_bloginfo( 'name' );
+	$language    = get_bloginfo( 'language' );
 
+	// WebPage or other schema types.
 	$webpage_itempage = array(
 		'@type'           => array_unique( $schema_types ),
 		'@id'             => $current_url,
 		'url'             => $current_url,
-		'name'            => get_the_title() . ' - ' . get_bloginfo( 'name' ),
-		'isPartOf'        => array(
-			'@id' => path_join( get_bloginfo( 'url' ), '#website' ),
-		),
+		'name'            => get_the_title() . ' - ' . $blog_name,
+		'isPartOf'        => array( '@id' => path_join( $blog_url, '#website' ) ),
 		'datePublished'   => get_the_time( 'c' ),
 		'dateModified'    => get_the_modified_time( 'c' ),
-		'breadcrumb'      => array(
-			'@id' => path_join( $current_url, '#breadcrumb' ),
-		),
-		'inLanguage'      => get_bloginfo( 'language' ),
+		'breadcrumb'      => array( '@id' => path_join( $current_url, '#breadcrumb' ) ),
+		'inLanguage'      => $language,
 		'potentialAction' => array(
 			array(
 				'@type'  => 'ReadAction',
-				'target' => array(
-					$current_url,
-				),
+				'target' => array( $current_url ),
 			),
 		),
 	);
 
+	// FAQPage schema type.
+	$faq_main_entity = seo_ready_generate_faq_page_item();
+	$faq_list        = ! empty( $faq_main_entity ) ? array(
+		'@type'      => 'FAQPage',
+		'@id'        => path_join( $current_url, '#faq' ),
+		'url'        => $current_url,
+		'mainEntity' => $faq_main_entity,
+		'inLanguage' => $language,
+		'isPartOf'   => array( '@id' => path_join( $blog_url, '#website' ) ),
+		'breadcrumb' => array( '@id' => path_join( $current_url, '#breadcrumb' ) ),
+	) : array();
+
+	// BreadcrumbList schema type.
 	$breadcrumb_list = array(
 		'@type'           => 'BreadcrumbList',
 		'@id'             => path_join( $current_url, '#breadcrumb' ),
 		'itemListElement' => seo_ready_generate_breadcrumb_list_item(),
 	);
 
+	// WebSite schema type.
 	$website = array(
 		'@type'           => 'WebSite',
-		'@id'             => path_join( get_bloginfo( 'url' ), '#website' ),
-		'url'             => get_bloginfo( 'url' ),
-		'name'            => get_bloginfo( 'name' ),
+		'@id'             => path_join( $blog_url, '#website' ),
+		'url'             => $blog_url,
+		'name'            => $blog_name,
 		'description'     => get_bloginfo( 'description' ),
 		'potentialAction' => array(
 			array(
 				'@type'       => 'SearchAction',
 				'target'      => array(
 					'@type'       => 'EntryPoint',
-					'urlTemplate' => path_join( get_bloginfo( 'url' ), '?s={search_term_string}' ),
+					'urlTemplate' => path_join( $blog_url, '?s={search_term_string}' ),
 				),
 				'query-input' => 'required name=search_term_string',
 			),
 		),
-		'inLanguage'      => get_bloginfo( 'language' ),
+		'inLanguage'      => $language,
 	);
 
-	// Person graph.
+	// Person schema type if applicable.
+	$person = array();
 	if ( $has_person_graph ) {
+		$author_id       = get_the_author_meta( 'ID' );
 		$author_name     = get_the_author();
-		$author_url      = get_author_posts_url( get_the_author_meta( 'ID' ) );
+		$author_url      = get_author_posts_url( $author_id );
 		$author_gravatar = get_avatar_url( get_the_author_meta( 'user_email' ), array( 'size' => 96 ) );
-		$person          = array(
+
+		$person = array(
 			'@type'  => 'Person',
-			'@id'    => path_join( path_join( get_bloginfo( 'url' ), '#/schema/person' ), seo_ready_get_current_user_hash( get_the_author_meta( 'ID' ) ) ),
+			'@id'    => path_join( path_join( $blog_url, '#/schema/person' ), seo_ready_get_current_user_hash( $author_id ) ),
 			'name'   => $author_name,
 			'image'  => array(
 				'@type'      => 'ImageObject',
-				'inLanguage' => get_bloginfo( 'language' ),
+				'inLanguage' => $language,
 				'@id'        => path_join( $author_url, '#/schema/person/image' ),
 				'url'        => $author_gravatar,
 				'contentUrl' => $author_gravatar,
 				'caption'    => $author_name,
 			),
-			'sameAs' => array(
-				$author_url,
-			),
+			'sameAs' => array( $author_url ),
 			'url'    => $author_url,
 		);
 	}
 
+	// Final schema graph.
 	$graph = array(
 		'@context' => 'https://schema.org',
-		'@graph'   => array_filter(
-			array(
-				$webpage_itempage,
-				$breadcrumb_list,
-				$website,
-				$person,
+		'@graph'   => array_values( // Make sure the array is indexed.
+			array_filter( // Remove empty values.
+				array(
+					$webpage_itempage,
+					$faq_list,
+					$breadcrumb_list,
+					$website,
+					$person,
+				)
 			)
 		),
 	);
 
 	return wp_json_encode( $graph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+}
+
+/**
+ * Generates FAQPage item.
+ *
+ * @since 2.4.0
+ *
+ * @param array $faqs FAQ items.
+ *
+ * @return array
+ */
+function seo_ready_generate_faq_page_item( $faqs = array() ) {
+
+	static $faq_page_item = array();
+
+	if ( empty( $faqs ) ) {
+		return $faq_page_item;
+	}
+
+	foreach ( $faqs as $position => $details_block ) {
+
+		$answer   = '';
+		$question = $details_block['innerHTML'];
+		$answer   = $details_block['innerBlocks'][0]['innerHTML'];
+
+		$faq_page_item[] = array(
+			'@type'          => 'Question',
+			'position'       => $position + 1,
+			'answerCount'    => 1,
+			'name'           => wp_strip_all_tags( $question ),
+			'acceptedAnswer' => array(
+				'@type' => 'Answer',
+				'text'  => wp_strip_all_tags( $answer ),
+			),
+		);
+	}
+
+	return $faq_page_item;
 }
 
 /**
@@ -745,7 +830,7 @@ function seo_ready_generate_breadcrumbs_trails( $post_id = null, $attributes = a
 	$trails = $breadcrumbs->generate();
 
 	// Leave early if no trails are found.
-	if ( empty( $trails ) || count( $trails ) < 2 ) {
+	if ( count( $trails ) <= 1 ) {
 		return array();
 	}
 
